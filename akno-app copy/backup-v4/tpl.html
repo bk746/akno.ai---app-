@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0B"><title>Akno</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--t2:#9A9AA0;--t3:#5E5E64;--line:rgba(255,255,255,.07);--ac:#5B8CFF;--ro:#F43F5E}
+html,body{height:100%}
+body{font-family:Inter,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.015em;color:#F5F5F7;background:linear-gradient(160deg,#3a3a3f 0%,#1c1c1f 45%,#0b0b0c 100%) fixed;overflow:hidden}
+button,input,textarea{font:inherit;color:inherit;letter-spacing:inherit;border:0;background:none;outline:none}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.app{position:relative;width:100%;height:100dvh;margin:0 auto;overflow:hidden;background:linear-gradient(172deg,#2C2C30 0%,#1A1A1D 32%,#0E0E10 62%,#0A0A0B 100%)}
+.app:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(125deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 35%),radial-gradient(500px 260px at 15% -5%,rgba(255,250,245,.06),transparent 70%)}
+@media (min-width:600px) and (max-width:767px){body{display:flex;align-items:center;justify-content:center}.app{width:430px;height:min(932px,calc(100vh - 40px));border-radius:48px;box-shadow:0 0 0 10px #232325,0 0 0 11.5px #5a5a5f,0 50px 90px -30px rgba(0,0,0,.9)}}
+.scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top) + 14px) 20px 140px;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.scr.in{animation:in .28s cubic-bezier(.2,.8,.2,1)}.scr.push{animation:push .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}@keyframes push{from{opacity:0;transform:translateX(28px)}}
+.top{height:48px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.h1{font-size:30px;font-weight:700;letter-spacing:-.035em}
+.k{background:rgba(255,255,255,.065);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.07)}
+.lab{font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
+.f{display:flex;align-items:center}.sp{justify-content:space-between}.fl{flex:1;min-width:0}
+.t2{color:var(--t2)}.ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+svg.s{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.chip{font-size:12px;font-weight:600;padding:4px 9px;border-radius:8px;white-space:nowrap;background:rgba(255,255,255,.07);color:#C7C7CC}
+.urg{background:#E11D48;color:#fff;display:inline-flex;align-items:center;gap:4px}
+.arp{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#FB7185;padding:3px 9px;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(251,113,133,.55);white-space:nowrap;flex:none}
+.fg .chip{min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}.fg .chip.urg{flex:none}
+@media(max-width:767px){.rpb{height:32px;padding:0 12px;font-size:13px;gap:5px}}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex:none}
+.rpb{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:17px;background:#E11D48;color:#fff;font-size:14px;font-weight:600;text-decoration:none;flex:none}
+.shd{display:flex;justify-content:space-between;align-items:center;margin:16px 4px 10px;font-size:13px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}.shd.red{color:#FB7185}.shd b{font-size:12px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.07)}.shd.red b{background:rgba(244,63,94,.16)}.shd.ok{color:var(--t3)}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--t2);margin:2px 4px 0}.leg span{display:inline-flex;align-items:center;gap:5px}.leg .lu{color:#fff;background:#E11D48;padding:1px 7px;border-radius:6px}
+.fld{display:block;margin-top:12px}.fld span{display:block;font-size:12px;color:var(--t2);margin:0 0 6px 2px}.fld input,.fld select,.fld textarea{width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;color:#fff;font:inherit;font-size:15px;padding:11px 12px;outline:none;color-scheme:dark;resize:none}.fld input:focus,.fld select,.fld textarea:focus{border-color:rgba(255,255,255,.18)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rs{max-height:88%;overflow-y:auto}
+.conf{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:12px;border-radius:14px;background:rgba(244,63,94,.12);font-size:14px;color:#FECDD3}.delb{background:#E11D48!important;color:#fff!important;box-shadow:none!important}
+.sec{height:50px;border-radius:25px;background:rgba(255,255,255,.08);color:#fff;border:0;font:inherit;font-size:15px;font-weight:600}
+.aib{border-radius:24px;padding:1px;background:linear-gradient(140deg,rgba(91,140,255,.45),rgba(255,255,255,.06) 40%,rgba(244,63,94,.3))}.aibi{border-radius:23px;padding:16px;background:linear-gradient(160deg,#17171B,#0E0E10)}
+.kps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.kp{background:rgba(255,255,255,.04);border-radius:14px;padding:10px}
+.aich{padding:14px}.demo{font-size:11px;color:var(--t3);text-align:right}
+#msgs{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.mu{align-self:flex-end;max-width:85%;background:#fff;color:#000;padding:8px 12px;border-radius:16px 16px 4px 16px;font-size:14px}
+.ma{align-self:flex-start;max-width:92%;background:rgba(255,255,255,.06);padding:10px 12px;border-radius:16px 16px 16px 4px;font-size:14px;line-height:20px;color:#E4E4E7}.ma ul{margin:6px 0;padding-left:18px}.ma li{margin:3px 0}.ma a{color:#8DB0FF;cursor:pointer;text-decoration:none;font-weight:600}.rd{color:#FB7185}
+.chips{display:flex;gap:6px;overflow-x:auto;margin:12px -2px 10px;padding:0 2px;scrollbar-width:none}.chips .pill{flex:none;font-size:13px;height:32px}
+.ain{display:flex;gap:8px}.ain input{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:22px;color:#fff;font:inherit;font-size:15px;padding:0 16px;height:44px;outline:none}.snd{width:44px;height:44px;border-radius:22px;border:0;background:#fff;color:#000;display:grid;place-items:center;flex:none}
+.clr{background:none;border:0;font:inherit;font-size:12px;margin-top:8px;padding:0}
+.fi{position:relative;overflow:hidden;padding:14px 14px 12px 18px;margin-bottom:10px;cursor:pointer}.fi .bar{position:absolute;left:0;top:0;bottom:0;width:3px}
+.fsec{margin-top:10px}.fk{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em}.fsec p{margin:3px 0 0;font-size:14px;line-height:20px;color:#D4D4D8}
+body.D .as{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;height:100%;min-height:0}body.D .as .col{overflow-y:auto;min-height:0}
+@media(max-width:1023px){body.D .as{display:block;overflow-y:auto}body.D .as .col{overflow:visible;margin-bottom:16px}}
+body.D .wc{cursor:copy}body.D .sheet.rs{max-height:90vh;width:520px}
+
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex:none;background:#1C1C1E;color:#E6E6E6;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.rb{width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;color:#C9D1E0;flex:none;transition:background .15s}.rb:active{background:rgba(255,255,255,.14)}
+.bw{display:flex;align-items:center;gap:8px;justify-content:center;height:44px;padding:0 18px;border-radius:14px;background:#fff;color:#000;font-size:15px;font-weight:600;transition:transform .12s}.bw:active{transform:scale(.97)}
+.tab{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 18px);height:66px;border-radius:33px;background:rgba(48,48,52,.6);backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);border:.5px solid rgba(255,255,255,.11);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px rgba(0,0,0,.5);display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:0 6px;z-index:8}
+.fd{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(rgba(10,10,11,0),#0A0A0B 65%);z-index:7;pointer-events:none}
+.tbb{height:54px;border-radius:27px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10.5px;font-weight:500;letter-spacing:.01em;color:rgba(235,235,245,.6);transition:background .25s,color .25s}
+.tbb.on{color:#fff;font-weight:650;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+.tbb svg{width:22px;height:22px}
+.bdg{position:absolute;top:-5px;right:-11px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--ro);color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;box-shadow:0 0 0 2px #2a2a2e}
+.srch{display:flex;align-items:center;gap:8px;height:44px;border-radius:14px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);padding:0 14px;color:var(--t3)}
+.srch input{flex:1;min-width:0;color:#F5F5F7;font-size:15px}.srch input::placeholder{color:var(--t3)}
+.pills{display:flex;gap:8px;margin:12px -20px 16px;padding:0 20px;overflow-x:auto;scrollbar-width:none}.pills::-webkit-scrollbar{display:none}
+.pill{display:flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:12px;font-size:13px;font-weight:600;white-space:nowrap;background:rgba(255,255,255,.07);color:#D4D4D8;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);transition:all .2s}
+.pill.on{background:#fff;color:#000;box-shadow:none}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex:none}
+.sw{position:relative;margin-bottom:10px;border-radius:24px;overflow:hidden}
+.acts{position:absolute;inset:0;display:flex;justify-content:flex-end;opacity:0;transition:opacity .15s}.sw.op .acts,.sw.drag .acts{opacity:1}
+.acts button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:600}
+.fg{position:relative;padding:14px 16px 14px 18px;overflow:hidden;touch-action:pan-y;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.sw.drag .fg{transition:none}.sw.op .fg,.sw.drag .fg{background:#252528}
+.bar{position:absolute;left:0;top:0;bottom:0;width:3px}
+.qk{display:none;width:28px;height:28px;border-radius:9px;align-items:center;justify-content:center;background:rgba(255,255,255,.08);color:#E6E6E6;margin-left:6px}
+@media (hover:hover){.qk{display:flex}}
+.sec{flex:1;display:flex;gap:8px;justify-content:center;align-items:center;height:44px;border-radius:14px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:14px;font-weight:500;color:#E6E6E6}
+.seg{display:flex;padding:4px;border-radius:16px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.seg button{flex:1;height:36px;border-radius:12px;font-size:13px;font-weight:500;color:var(--t2);transition:all .2s;white-space:nowrap}.seg button.on{background:rgba(255,255,255,.12);color:#fff;font-weight:600}
+.tile{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;background:rgba(161,161,170,.14);color:#A1A1AA}
+.irow{display:flex;align-items:center;gap:14px;min-height:60px;padding:10px 0}
+.sep{height:1px;background:var(--line);margin-left:48px}
+textarea.nt{width:100%;resize:none;font-size:15px;font-weight:500;line-height:20px;margin-top:2px;color:#F5F5F7;min-height:22px}textarea.nt::placeholder{color:var(--t3)}
+.day{flex:1;height:64px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);transition:all .2s}
+.day.on{background:#fff;color:#000;box-shadow:none}.day .dn{font-size:11px;font-weight:600;color:var(--t3)}.day.on .dn{color:#555}
+.day.td:not(.on) .dn{color:#fff}
+.blk{position:absolute;left:60px;right:0;border-radius:12px;background:rgba(91,140,255,.17);overflow:hidden;padding:7px 12px 6px 15px;cursor:pointer}
+.blk.past{background:rgba(142,142,147,.17);opacity:.7}.blk.past .bar{background:#8E8E93!important}
+.tg{width:51px;height:31px;border-radius:16px;background:rgba(255,255,255,.14);position:relative;transition:background .2s;flex:none}.tg:after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .2s}
+.tg.on{background:var(--ac)}.tg.on:after{transform:translateX(20px)}
+.toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translate(-50%,-20px);opacity:0;z-index:30;background:rgba(48,48,52,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.12);border-radius:16px;padding:11px 16px;font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;white-space:nowrap;transition:all .3s cubic-bezier(.2,.8,.2,1);pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.toast.sh{opacity:1;transform:translate(-50%,0)}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:20;opacity:0;transition:opacity .25s}.sheet-bg.sh{opacity:1}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:#1C1C1F;border-radius:28px 28px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 24px);transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.sheet.sh{transform:none}
+.sheet textarea{width:100%;height:110px;resize:none;border-radius:16px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);padding:12px 14px;font-size:15px;line-height:21px;margin:14px 0}
+.empty{text-align:center;color:var(--t3);font-size:14px;padding:40px 0}
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer}
+
+/* ===== ordinateur / tablette ===== */
+#side,#tbar{display:none}.dq{display:none}
+body.D{display:block}
+body.D .app{width:100%;height:100vh;border-radius:0;box-shadow:none;background:linear-gradient(165deg,#2C2C30 0%,#1A1A1D 30%,#0E0E10 62%,#0A0A0B 100%)}
+body.D .app:before{background:linear-gradient(125deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,0) 30%),radial-gradient(900px 420px at 10% -10%,rgba(255,250,245,.06),transparent 70%)}
+body.D #tab,body.D #fd{display:none}
+body.D #side{display:flex;flex-direction:column;position:absolute;left:0;top:0;bottom:0;width:248px;padding:22px 14px 18px;border-right:1px solid var(--line);background:rgba(255,255,255,.02);z-index:5}
+.sn{display:flex;align-items:center;gap:12px;height:46px;padding:0 14px;border-radius:15px;color:rgba(235,235,245,.6);font-size:14.5px;font-weight:500;transition:background .2s,color .2s;width:100%}
+.sn:hover{background:rgba(255,255,255,.05);color:#fff}.sn.on{background:rgba(255,255,255,.11);color:#fff;font-weight:650;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.1)}
+.sn svg{width:22px;height:22px}.sl{flex:1;text-align:left}
+.scount{min-width:22px;height:20px;padding:0 6px;border-radius:10px;background:var(--ro);color:#fff;font-size:11.5px;font-weight:700;line-height:20px;text-align:center}.sbdg{display:none}
+.sacc{display:flex;align-items:center;gap:12px;padding:10px;border-radius:18px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);width:100%}.sacc:hover{background:rgba(255,255,255,.08)}
+body.D #tbar{display:flex;align-items:center;gap:12px;position:absolute;left:248px;right:0;top:0;height:84px;padding:0 max(32px,calc((100% - 1440px)/2 + 32px));z-index:5;border-bottom:1px solid var(--line)}
+.gsrch{width:min(340px,32vw)}
+body.D #view{position:absolute;left:248px;right:0;top:84px;bottom:0}
+body.D .scr{padding:24px 32px 40px}body.D .scr.fx{overflow:hidden}body.D .scr.fx .wrap{height:100%}
+.wrap{max-width:1376px;margin:0 auto}
+.dg{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.dc{padding:20px}
+.c7{grid-column:span 7}.c5{grid-column:span 5}.c12{grid-column:span 12}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.trow{display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:16px;cursor:pointer;transition:background .15s}.trow:hover{background:rgba(255,255,255,.05)}.trow.sel{background:rgba(255,255,255,.09)}
+.lrw{cursor:pointer;border-radius:10px}.lrw:hover{background:rgba(255,255,255,.04)}
+.thd{display:flex;gap:14px;padding:6px 12px 8px 62px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.md{display:grid;grid-template-columns:minmax(330px,420px) 1fr;gap:16px;height:100%}.md.mdc{grid-template-columns:minmax(380px,1.1fr) 1fr}
+.col{overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent;min-height:0;min-width:0}
+.pane{padding:0}.phd{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 24px;border-bottom:1px solid var(--line);background:rgba(30,30,33,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);flex-wrap:wrap}
+.pbd{padding:20px 24px 28px;max-width:820px}
+body.D .sw{margin-bottom:8px}body.D .fg{cursor:pointer}body.D .sw .fg:hover{background:rgba(255,255,255,.09)}body.D .sw.sel .fg{background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+body.D .dq{display:flex}body.D .qk{display:flex;position:absolute;top:11px;right:14px;margin:0;background:#3a3a3e;box-shadow:0 2px 8px rgba(0,0,0,.4);opacity:0;transition:opacity .15s}body.D .sw:hover .qk,body.D .sw.sel .qk{opacity:1}body.D .qk:hover{background:rgba(255,255,255,.18)}
+body.D .pill:hover:not(.on){background:rgba(255,255,255,.11)}body.D .rb:hover{background:rgba(255,255,255,.11)}
+.ag{display:grid;grid-template-columns:1fr 300px;gap:16px;height:100%}
+.agh{padding:16px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4;background:rgba(30,30,33,.9);backdrop-filter:blur(20px)}
+.wk{display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr))}
+.wk:not(.wkb){position:sticky;top:67px;z-index:4;background:rgba(26,26,29,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:8px 0}
+.wd{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:14px;margin:0 3px;transition:background .15s}.wd:hover{background:rgba(255,255,255,.05)}.wd.on{background:rgba(255,255,255,.1)}
+.wdn{font-size:18px;font-weight:700;width:34px;height:34px;line-height:34px;text-align:center;border-radius:50%}.wdn.td{background:#fff;color:#000}
+.wc{position:relative;border-left:1px solid rgba(255,255,255,.05);cursor:pointer}.wc.on{background:rgba(255,255,255,.035)}
+.wb{left:4px;right:4px;padding:6px 8px 6px 11px}.wb:hover{filter:brightness(1.25)}
+.arow{display:flex;align-items:center;gap:14px;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);margin-bottom:8px;cursor:pointer}.arow:hover{background:rgba(255,255,255,.09)}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}.rg .lab:first-child{margin-top:0!important}
+body.D .sheet{left:50%;right:auto;bottom:auto;top:50%;width:460px;border-radius:24px;padding:18px 22px 22px;transform:translate(-50%,-44%);opacity:0;transition:all .25s}body.D .sheet.sh{transform:translate(-50%,-50%);opacity:1}
+body.D .toast{top:20px}
+body.D .fg .f[style*="padding-left:52px"]{padding-left:0!important;flex-wrap:wrap}.phd>div:last-child{flex-wrap:wrap}.phd>div:first-child{flex:1 1 240px;min-width:0}body.D .qk.dq{right:48px}body.D .sw:hover .fg>.f:first-of-type .t2:last-child{opacity:0}.phd .bw{white-space:nowrap}.md>*,.mdc>*{min-width:0}
+@media (max-width:1279px){.phd>div:last-child{width:100%}.phd>div:last-child .bw{flex:1}.md{grid-template-columns:320px minmax(0,1fr)}.md.mdc{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.c7,.c5{grid-column:span 6}.hm1{display:none}.ag{grid-template-columns:1fr}.agside{display:none}}
+@media (max-width:1023px){body.D #side{width:80px;padding:22px 12px 18px;align-items:center}body.D #side .sl,body.D .scount{display:none}body.D .sbdg{display:block}.sn{justify-content:center;padding:0;width:52px}.sacc{padding:6px;width:auto;background:none;box-shadow:none}
+ body.D #tbar,body.D #view{left:80px}body.D #tbar{padding:0 24px}body.D .scr{padding:20px 24px 32px}.c7,.c5{grid-column:span 12}.md{grid-template-columns:300px minmax(0,1fr)}.md.mdc{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.rg{grid-template-columns:1fr}.gsrch{width:220px}.phd{padding:18px}.pbd{padding:18px}}
+
+/* ===== V3 ===== */
+.db{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}.db>*{grid-column:span 12;min-width:0}
+.dcard{padding:16px}.cmp{padding:14px 16px}.redl{box-shadow:inset 0 0 0 1px rgba(244,63,94,.3)}
+.kpis6{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{border-radius:20px;padding:14px;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);min-width:0}
+.kl{font-size:12px;font-weight:500}.kv{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-top:6px;white-space:nowrap}.kpi.blue .kv{color:#5B8CFF}.kpi.red .kv{color:#FB7185}
+.ks{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:11px;margin-top:6px}.t3{color:var(--t3)}
+.tr{font-weight:600;color:var(--t2)}.tr.up{color:#4ADE80}.tr.dn{color:#FB7185}
+.lg{gap:12px;font-size:11px}.lg span{display:inline-flex;align-items:center;gap:5px}
+.bars{display:flex;align-items:stretch;gap:6px;height:150px;margin-top:14px}.bars.dense{gap:3px}.bars.hrs{gap:3px;height:110px}
+.bc{flex:1;display:flex;flex-direction:column;min-width:0}.bt{flex:1;display:flex;align-items:flex-end;border-radius:6px;background:rgba(255,255,255,.03)}
+.bv{width:100%;border-radius:6px;background:rgba(255,255,255,.3);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;min-height:2px}.br{background:#5B8CFF;width:100%}
+.bl{font-size:10px;color:var(--t3);text-align:center;height:14px;margin-top:5px;white-space:nowrap;overflow:visible}.bl.on{color:#fff;font-weight:600}
+.fr,.hl{margin-bottom:11px}.ft{height:6px;border-radius:3px;background:rgba(255,255,255,.06);margin-top:5px;overflow:hidden}.ft>div{height:100%;border-radius:3px}
+.seg.per button{height:34px}
+.pin{width:96px;height:38px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#fff;font:inherit;font-size:15px;text-align:right;padding:0 10px;outline:none}
+body.D .db .s4{grid-column:span 4}body.D .db .s6{grid-column:span 6}body.D .db .s8{grid-column:span 8}body.D .kpis6{grid-template-columns:repeat(6,minmax(0,1fr))}
+@media(max-width:1279px){body.D .kpis6{grid-template-columns:repeat(3,minmax(0,1fr))}body.D .db .s4{grid-column:span 6}body.D .db .s8{grid-column:span 12}}
+@media(max-width:1023px){body.D .db .s4,body.D .db .s6{grid-column:span 12}}
+/* appels */
+.tabs3 button{height:40px;font-size:14px}.tabs3 .cnt{display:inline-block;min-width:20px;padding:1px 6px;margin-left:4px;border-radius:8px;background:rgba(255,255,255,.1);font-size:12px}
+.tabs3 button.red .cnt{background:rgba(244,63,94,.22);color:#FB7185}.tabs3 button.red.on{color:#FB7185}
+.r3 .nm{font-size:17px;font-weight:650;min-width:0}.ago{font-size:12px;color:var(--t2);flex:none;display:inline-flex;align-items:center}.ago.rd{color:#FB7185}
+.ra{display:flex;gap:8px;margin-top:12px}.rpb.big{flex:1;justify-content:center;height:42px;border-radius:14px;font-size:15px}
+.mk{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:42px;border-radius:14px;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:14px;font-weight:600;border:0;white-space:nowrap}
+.mk2{gap:6px;white-space:nowrap}
+.hint{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);margin:0 4px 10px}
+.emp{text-align:center;padding:28px 20px}
+body.D .r3 .qk{display:none}
+/* assistant */
+.bul{margin:12px 0 0;padding-left:18px;font-size:14px;line-height:21px;color:#D4D4D8}.bul li{margin:5px 0}.bul li::marker{color:var(--t3)}
+.chk{margin-top:6px}.ci{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.ci:last-child{border:0}
+.cb{width:22px;height:22px;border-radius:7px;border:0;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);background:none;color:transparent;display:grid;place-items:center;flex:none;cursor:pointer}
+.ci.dn .cb{background:#5B8CFF;box-shadow:none;color:#fff}.ci.dn .ct{text-decoration:line-through;color:var(--t3)}.ct{font-size:14px;font-weight:600}
+.askb{padding:16px}.ain.big input{height:52px;font-size:16px;border-radius:26px}.ain.big{margin-top:12px}.ain.big .snd{width:52px;height:52px;border-radius:26px}
+.ans{margin-top:12px;border-radius:18px;background:rgba(255,255,255,.045);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);padding:12px 14px}.ans.old{opacity:.7}
+.aq{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px}
+.ma2{font-size:14px;line-height:21px;color:#E4E4E7}.ma2 ul{margin:6px 0;padding-left:18px}.ma2 li{margin:3px 0}.ma2 a{color:#8DB0FF;cursor:pointer;text-decoration:none;font-weight:600}
+.askb .demo{margin-top:12px;text-align:left}
+.jn{padding:14px 14px 8px}.jt{background:none;border:0;color:inherit;font:inherit;padding:2px;cursor:pointer}
+.jr{border-bottom:1px solid var(--line)}.jr:last-child{border:0}.jh{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;color:#fff;font:inherit;font-size:14px;padding:11px 4px;cursor:pointer;min-width:0}
+.jb{padding:0 4px 12px 22px}
+body.D .as .col:last-child .jn{min-height:100%;box-sizing:border-box}
+
+/* ===== V4 : passe calme ===== */
+:root{--ro:#E5484D}
+.sg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8E8E94;white-space:nowrap}.sd{display:inline-block;width:6px;height:6px;border-radius:50%;flex:none}
+.urg2{color:rgba(255,140,140,.9)}
+.bdg{background:#D9534F;box-shadow:0 0 0 2px #1d1d20}
+.rd{color:rgba(255,140,140,.85)!important}
+.sw.lw{margin:0;border-radius:12px;overflow:hidden}
+.lr{display:flex;align-items:center;gap:12px;padding:12px 12px;border-radius:12px;background:transparent}
+.sw.lw+.sw.lw .lr{box-shadow:0 -1px 0 var(--line)}
+.lr .nm{font-size:15px;font-weight:600;letter-spacing:-.01em}.sub{font-size:13px;color:var(--t2);margin-top:2px}
+.lrm{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none}.lrm .ago{font-size:12px;color:var(--t3)}
+.lra{display:flex;gap:6px;flex:none}.lra:empty{display:none}
+.ib{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.07);color:#fff;border:0;flex:none;cursor:pointer;transition:background .15s,opacity .15s}.ib:hover{background:rgba(255,255,255,.14)}
+.qk2{display:none}
+body.D .qk2{display:grid;opacity:0}body.D .sw.lw:hover .qk2{opacity:1}
+.sw.op .lr,.sw.drag .lr{background:#232326}
+body.D .sw.lw .lr:hover{background:rgba(255,255,255,.035)}body.D .sw.lw.sel .lr{background:rgba(255,255,255,.06);box-shadow:none}
+body.D .sw.lw:hover+.sw.lw .lr,body.D .sw.lw.sel+.sw.lw .lr{box-shadow:none}
+.tabs3{background:rgba(255,255,255,.045);box-shadow:none;border-radius:12px;padding:3px}.tabs3 button{height:32px;font-size:13px;border-radius:9px;font-weight:500}.tabs3 button.on{background:rgba(255,255,255,.1)}
+.tabs3 .cnt{background:none!important;color:var(--t3)!important;padding:0 0 0 2px;min-width:0;font-weight:500}.tabs3 button.on .cnt{color:var(--t2)!important}
+.lab.f.sp{font-size:11px}
+.emp{padding:56px 20px}
+.ghost{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:10px;border:0;background:none;color:var(--t2);font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}.ghost:hover{background:rgba(255,255,255,.06);color:#fff}
+.bw.bsm{height:36px;padding:0 14px;border-radius:10px;font-size:14px;gap:6px}
+.phd .rb{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.05)}
+.sh2{font-size:12px;font-weight:500;color:var(--t3);margin:28px 0 10px}
+.blk2{padding:0}.blk2.lst .irow{min-height:52px;padding:6px 0}.blk2.lst .sep{margin-left:48px}.blk2 .trow{padding:10px 0;border-radius:0;border-bottom:1px solid var(--line)}.blk2 .trow:last-child{border:0}.blk2 .trow:hover{background:none}
+.aisum{border-radius:14px;background:rgba(255,255,255,.04);padding:14px 16px}
+.irow .tile{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);color:#A1A1AA}
+.chip{font-weight:500;background:rgba(255,255,255,.06);color:#A1A1AA}
+/* dashboard */
+.kpi{background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);border-radius:16px;padding:16px}.kv{font-size:24px;font-weight:600}.kpi.blue .kv{color:#fff}.kl{color:var(--t2)}
+.tr.up{color:#7FCB9A}.tr.dn{color:#C98B8B}.tr{font-weight:500}
+.dcard{padding:20px}.db{gap:16px}
+body.D .k{background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.055);border-radius:20px}
+.k{background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.055);border-radius:20px}
+.bv{background:rgba(255,255,255,.18);border-radius:4px}.bt{background:none;border-radius:4px}.bars{gap:8px}.bars.dense{gap:4px}
+.ft{height:4px}
+.seg.per{background:rgba(255,255,255,.045);box-shadow:none;border-radius:12px;padding:3px}.seg.per button{height:32px;border-radius:9px;font-size:13px}
+/* assistant */
+.aib{background:none;padding:0;border-radius:20px}.aibi{background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.055);border-radius:20px;padding:20px}
+.bul{color:#C7C7CC}.bul b{font-weight:600;color:#fff}
+.ci{border-color:var(--line)}.ct{font-weight:500}.cb{width:20px;height:20px;border-radius:6px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22)}.ci.dn .cb{background:#fff;color:#000}
+.askb{padding:20px}.ain.big input{height:48px;border-radius:24px;background:rgba(255,255,255,.05)}.ain.big .snd{width:48px;height:48px}
+.chips .pill{background:rgba(255,255,255,.05);box-shadow:none;font-weight:500;color:#C7C7CC}
+.ans{background:rgba(255,255,255,.03);box-shadow:none;border-radius:14px}
+.jn{padding:18px 16px 8px}
+.bc{align-items:center}.bt{width:100%;max-width:26px}.bars.dense .bt{max-width:14px}.bars.hrs .bt{max-width:14px}.br{background:#5B8CFF;opacity:.85}
+.dcard .tile{background:rgba(255,255,255,.05)!important;color:#C7C7CC!important;border-radius:50%}
+.phd{padding-bottom:20px}
+.qa .sec{flex:none;height:36px;padding:0 12px;border-radius:10px;font-size:13px;font-weight:500;background:rgba(255,255,255,.05);color:#C7C7CC;gap:6px}.qa .ghost{padding:0 10px 0 0}
+</style></head><body>
+__SYM__
+<div class="app" id="app"><aside id="side"></aside><header id="tbar"></header><div id="view"></div><div class="fd" id="fd"></div><nav class="tab" id="tab"></nav><div class="toast" id="toast"></div><div id="sheet"></div></div>
+<script>
+/* =====================================================================
+   DONNÉES DE DÉMO — à remplacer par la table Supabase « calls »
+   Chaque objet = une ligne de la table. Dates générées relativement à
+   aujourd'hui pour que la démo reste toujours « fraîche ».
+   raison_blocage : pourquoi l'appel n'a pas (encore) converti, ou null
+   Les RDV (table « rdvs ») sont dérivés de rdv_date au premier lancement.
+   statut : 'a_rappeler' | 'rappele' | 'rdv_pris' | 'renseigne'
+   urgence : 'urgent' | 'normale'
+   type_demande : 'devis' | 'depannage' | 'entretien' | 'information'
+   ===================================================================== */
+const _d=(jours,h,m)=>{const x=new Date();x.setDate(x.getDate()+jours);x.setHours(h,m,0,0);return x.toISOString()};
+const _m=min=>new Date(Date.now()-min*60000).toISOString();
+const DEMO_CALLS=[
+ {id:1,nom_client:'Martin Durand',telephone_client:'06 12 34 56 78',email_client:'martin.durand@exemple.fr',code_postal:'69003',ville:'Lyon 3e',adresse:'12 rue Garibaldi, 69003 Lyon',motif:'PAC air-eau',besoin_detail:'Remplacement chaudière fioul, maison 120 m²',type_demande:'devis',urgence:'urgent',rdv_date:_d(8,10,0),resume:'Chaudière fioul en panne depuis hier. Projet de PAC air-eau pour une maison de 120 m², visite devis souhaitée vite.',note:'Prévoir mesure du ballon existant',raison_blocage:'Rappel non effectué',statut:'a_rappeler',created_at:_m(18),duree:'3 min 12'},
+ {id:2,nom_client:'Karim Benali',telephone_client:'06 45 22 81 09',email_client:'k.benali@exemple.fr',code_postal:'69100',ville:'Villeurbanne',adresse:'47 cours Émile Zola, 69100 Villeurbanne',motif:'Panne',besoin_detail:'PAC en défaut haute pression',type_demande:'depannage',urgence:'normale',rdv_date:null,resume:'PAC Daikin installée en 2021 affiche un code erreur haute pression. Plus de chauffage à l\'étage.',note:'',raison_blocage:'Rappel non effectué',statut:'a_rappeler',created_at:_m(95),duree:'2 min 40'},
+ {id:3,nom_client:'Sophie Lefèvre',telephone_client:'07 81 63 20 14',email_client:'sophie.lefevre@exemple.fr',code_postal:'69006',ville:'Lyon 6e',adresse:'8 rue Duguesclin, 69006 Lyon',motif:'Entretien',besoin_detail:'Entretien annuel PAC air-eau',type_demande:'entretien',urgence:'normale',rdv_date:_d(0,10,0),resume:'Entretien annuel de sa PAC air-eau Atlantic. Disponible en matinée, RDV calé.',note:'Code portail 2468',raison_blocage:null,statut:'rdv_pris',created_at:_m(160),duree:'1 min 58'},
+ {id:4,nom_client:'Léa Garnier',telephone_client:'06 70 14 52 33',email_client:'lea.garnier@exemple.fr',code_postal:'69006',ville:'Lyon 6e',adresse:'5 rue Sully, 69006 Lyon',motif:'PAC air-eau',besoin_detail:'Devis PAC + ballon thermodynamique',type_demande:'devis',urgence:'normale',rdv_date:_d(0,8,0),resume:'Souhaite remplacer sa chaudière gaz par une PAC air-eau avec ballon thermodynamique. Appartement en duplex.',note:'',raison_blocage:null,statut:'rdv_pris',created_at:_d(-1,18,5),duree:'4 min 05'},
+ {id:5,nom_client:'Claire Moreau',telephone_client:'06 33 90 27 41',email_client:'claire.moreau@exemple.fr',code_postal:'69120',ville:'Vaulx-en-Velin',adresse:'3 av. Foch, 69120 Vaulx-en-Velin',motif:'PAC air-air',besoin_detail:'Climatisation réversible 3 pièces',type_demande:'devis',urgence:'normale',rdv_date:_d(0,14,0),resume:'Projet de PAC air-air pour 3 chambres, maison de 90 m². Veut un devis avant l\'été.',note:'',raison_blocage:null,statut:'rdv_pris',created_at:_d(-1,17,48),duree:'2 min 31'},
+ {id:6,nom_client:'Paul Roux',telephone_client:'06 98 12 47 60',email_client:'paul.roux@exemple.fr',code_postal:'69003',ville:'Lyon 3e',adresse:'21 rue Paul Bert, 69003 Lyon',motif:'Panne',besoin_detail:'Unité extérieure bruyante',type_demande:'depannage',urgence:'normale',rdv_date:_d(0,16,30),resume:'Bruit anormal de l\'unité extérieure depuis 3 jours, fonctionne encore.',note:'',raison_blocage:null,statut:'rdv_pris',created_at:_d(-1,11,20),duree:'1 min 47'},
+ {id:7,nom_client:'Nadia Haddad',telephone_client:'07 66 04 39 18',email_client:'nadia.haddad@exemple.fr',code_postal:'69500',ville:'Bron',adresse:'14 rue Jean Jaurès, 69500 Bron',motif:'Information',besoin_detail:'Aides MaPrimeRénov\'',type_demande:'information',urgence:'normale',rdv_date:null,resume:'Questions sur les aides MaPrimeRénov\' et les CEE pour une PAC air-eau. Renseignée, rappellera.',note:'',raison_blocage:'Prix / attente des aides',statut:'renseigne',created_at:_d(-1,9,12),duree:'3 min 50'},
+ {id:8,nom_client:'Thomas Petit',telephone_client:'06 21 75 88 02',email_client:'thomas.petit@exemple.fr',code_postal:'69007',ville:'Lyon 7e',adresse:'60 av. Jean Jaurès, 69007 Lyon',motif:'Entretien',besoin_detail:'Contrat d\'entretien',type_demande:'entretien',urgence:'normale',rdv_date:null,resume:'Demande le tarif du contrat d\'entretien annuel. Tarif communiqué.',note:'',raison_blocage:'Prix du contrat',statut:'renseigne',created_at:_d(-2,15,30),duree:'1 min 22'},
+ {id:9,nom_client:'Isabelle Faure',telephone_client:'06 52 41 70 96',email_client:'i.faure@exemple.fr',code_postal:'69300',ville:'Caluire-et-Cuire',adresse:'2 rue Pasteur, 69300 Caluire-et-Cuire',motif:'PAC air-eau',besoin_detail:'Maison 150 m², plancher chauffant',type_demande:'devis',urgence:'normale',rdv_date:_d(1,9,0),resume:'Construction neuve 150 m² avec plancher chauffant. Souhaite une PAC air-eau, devis à domicile.',note:'',raison_blocage:null,statut:'rdv_pris',created_at:_d(-2,10,4),duree:'5 min 10'},
+ {id:10,nom_client:'Hugo Lambert',telephone_client:'07 12 58 36 47',email_client:'hugo.lambert@exemple.fr',code_postal:'69008',ville:'Lyon 8e',adresse:'33 rue Marius Berliet, 69008 Lyon',motif:'Panne',besoin_detail:'Plus d\'eau chaude',type_demande:'depannage',urgence:'urgent',rdv_date:null,resume:'Plus d\'eau chaude depuis ce matin, PAC en sécurité. Rappelé, problème de disjoncteur réglé à distance.',note:'Client très satisfait',raison_blocage:null,statut:'rappele',created_at:_d(-2,8,15),duree:'2 min 02'},
+ {id:11,nom_client:'Émilie Rousseau',telephone_client:'06 87 30 11 54',email_client:'emilie.rousseau@exemple.fr',code_postal:'69400',ville:'Villefranche',adresse:'9 rue Nationale, 69400 Villefranche-sur-Saône',motif:'PAC air-air',besoin_detail:'Remplacement clim ancienne',type_demande:'devis',urgence:'normale',rdv_date:_d(3,11,0),resume:'Remplacement d\'une ancienne climatisation par une PAC air-air multisplit.',note:'',raison_blocage:null,statut:'rdv_pris',created_at:_d(-3,16,40),duree:'2 min 55'},
+ {id:12,nom_client:'Julien Bernard',telephone_client:'06 04 92 63 75',email_client:'julien.bernard@exemple.fr',code_postal:'69009',ville:'Lyon 9e',adresse:'18 quai Arloing, 69009 Lyon',motif:'Information',besoin_detail:'Délais d\'installation',type_demande:'information',urgence:'normale',rdv_date:null,resume:'Demande les délais d\'installation pour une PAC air-eau. Délais de 3 semaines communiqués.',note:'',raison_blocage:'Délais d\'installation',statut:'renseigne',created_at:_d(-3,10,25),duree:'1 min 30'},
+ {id:13,nom_client:'Martin Durand',telephone_client:'06 12 34 56 78',email_client:'martin.durand@exemple.fr',code_postal:'69003',ville:'Lyon 3e',adresse:'12 rue Garibaldi, 69003 Lyon',motif:'Information',besoin_detail:'Premier contact',type_demande:'information',urgence:'normale',rdv_date:null,resume:'Premier appel pour se renseigner sur le remplacement d\'une chaudière fioul. Renseigné sur les aides.',note:'',raison_blocage:'Prix / attente des aides',statut:'rappele',created_at:_d(-4,14,10),duree:'2 min 18'},
+ {id:14,nom_client:'Camille Girard',telephone_client:'07 45 81 26 93',email_client:'camille.girard@exemple.fr',code_postal:'69200',ville:'Vénissieux',adresse:'27 av. de la République, 69200 Vénissieux',motif:'Panne',besoin_detail:'Fuite unité intérieure',type_demande:'depannage',urgence:'urgent',rdv_date:null,resume:'Fuite d\'eau sous l\'unité intérieure du salon. Rappelée, intervention planifiée par téléphone.',note:'',raison_blocage:null,statut:'rappele',created_at:_d(-4,9,2),duree:'1 min 49'},
+ {id:15,nom_client:'Antoine Mercier',telephone_client:'06 63 17 49 28',email_client:'antoine.mercier@exemple.fr',code_postal:'69110',ville:'Sainte-Foy-lès-Lyon',adresse:'5 chemin de Montray, 69110 Sainte-Foy-lès-Lyon',motif:'PAC air-eau',besoin_detail:'Maison 110 m² années 70',type_demande:'devis',urgence:'normale',rdv_date:_d(2,15,0),resume:'Maison des années 70, 110 m², chauffage électrique. Souhaite étudier une PAC air-eau.',note:'',raison_blocage:null,statut:'rdv_pris',created_at:_d(-5,17,5),duree:'3 min 44'},
+ {id:16,nom_client:'Sarah Blanc',telephone_client:'07 29 64 85 10',email_client:'sarah.blanc@exemple.fr',code_postal:'69005',ville:'Lyon 5e',adresse:'40 rue Saint-Jean, 69005 Lyon',motif:'Entretien',besoin_detail:'Entretien + nettoyage filtres',type_demande:'entretien',urgence:'normale',rdv_date:null,resume:'Souhaite un entretien de sa PAC air-air. N\'a pas laissé de créneau, à rappeler.',note:'',raison_blocage:'Pas de créneau proposé',statut:'a_rappeler',created_at:_d(-5,12,30),duree:'1 min 15'},
+ {id:17,nom_client:'Olivier Chevalier',telephone_client:'06 18 53 72 46',email_client:'o.chevalier@exemple.fr',code_postal:'69600',ville:'Oullins',adresse:'11 grande rue, 69600 Oullins',motif:'PAC air-air',besoin_detail:'Devis 2 splits',type_demande:'devis',urgence:'normale',rdv_date:null,resume:'Devis pour 2 splits PAC air-air. Rappelé, devis envoyé par e-mail.',note:'',raison_blocage:'Devis sans réponse',statut:'rappele',created_at:_d(-6,16,0),duree:'2 min 26'},
+ {id:18,nom_client:'Inès Fontaine',telephone_client:'06 77 02 38 61',email_client:'ines.fontaine@exemple.fr',code_postal:'69002',ville:'Lyon 2e',adresse:'7 rue de Brest, 69002 Lyon',motif:'Information',besoin_detail:'Fonctionnement PAC',type_demande:'information',urgence:'normale',rdv_date:null,resume:'Questions sur le fonctionnement d\'une PAC en hiver. Renseignée.',note:'',raison_blocage:'Rappel non effectué',statut:'a_rappeler',created_at:_d(-6,10,45),duree:'1 min 40'}
+];
+
+// Historique fictif sur ~60 jours (appels plus anciens, générés de façon déterministe)
+(function(){let s=7;const R=()=>(s=(s*16807)%2147483647)/2147483647,P=a=>a[Math.floor(R()*a.length)];
+ const N=['Lucas Moulin','Chloé Perrin','Nicolas Gauthier','Manon Robin','Maxime Clément','Laura Fournier','Romain Henry','Pauline Masson','Kevin Dupuis','Marion Lemoine','Alexandre Roche','Anaïs Vidal','Mathieu Brun','Élodie Picard','Damien Arnaud','Céline Renard','Quentin Barbier','Aurélie Colin','Sébastien Leroy','Julie Marchand','Yann Caron','Sandrine Noël','Florian Giraud','Mélanie Aubert'];
+ const V=[['69003','Lyon 3e'],['69100','Villeurbanne'],['69500','Bron'],['69007','Lyon 7e'],['69300','Caluire-et-Cuire'],['69200','Vénissieux'],['69130','Écully'],['69800','Saint-Priest'],['69140','Rillieux-la-Pape'],['69008','Lyon 8e']];
+ const M=[['PAC air-eau','devis','Projet de PAC air-eau en remplacement d\'une chaudière','Remplacement chaudière par PAC air-eau'],['PAC air-eau','devis','Maison à rénover, étude PAC air-eau et aides','Rénovation globale, PAC air-eau'],['PAC air-air','devis','Devis climatisation réversible multisplit','PAC air-air 2 à 3 splits'],['Entretien','entretien','Entretien annuel de la PAC','Entretien annuel'],['Panne','depannage','PAC en défaut, plus de chauffage','Dépannage PAC'],['Information','information','Questions sur les aides et le fonctionnement','Renseignements aides']];
+ const B=['Prix / attente des aides','Devis sans réponse','Délais d\'installation','Prix du contrat','Pas de créneau proposé'];
+ const H=[[6,40],[7,20],[7,50],[8,30],[9,10],[9,45],[10,20],[11,5],[11,40],[12,15],[13,30],[14,10],[14,50],[15,30],[16,20],[17,10],[17,45],[18,30],[19,15],[20,5],[21,10]];
+ let id=19;const add=day=>{const nm=P(N),[cp,vi]=P(V),[mo,ty,re,be]=P(M),[h,mi]=P(H),r=R();
+  const st=mo=='Information'?(r<.7?'renseigne':'rappele'):r<.46?'rdv_pris':r<.78?'rappele':'renseigne';
+  const bl=st=='rdv_pris'?null:(st=='renseigne'||R()<.5)?(mo=='Information'?P(['Prix / attente des aides','Délais d\'installation']):P(B)):null;
+  const tel='06 '+[0,0,0,0].map(()=>String(10+Math.floor(R()*89))).join(' ');
+  DEMO_CALLS.push({id:id++,nom_client:nm,telephone_client:tel,email_client:norm0(nm)+'@exemple.fr',code_postal:cp,ville:vi,adresse:(2+Math.floor(R()*60))+' rue de la République, '+cp+' '+vi.replace(/ \d+e$/,''),motif:mo,besoin_detail:be,type_demande:ty,urgence:mo=='Panne'&&R()<.4?'urgent':'normale',rdv_date:st=='rdv_pris'?_d(day+1+Math.floor(R()*2),[9,10,14,15][Math.floor(R()*4)],0):null,resume:re+'.',note:R()<.15?P(['Accès par le jardin','Préfère être appelé le soir','Ancienne chaudière gaz 2004']):'',raison_blocage:bl,statut:st,created_at:_d(day,h,mi),duree:(1+Math.floor(R()*4))+' min '+String(10+Math.floor(R()*49))})};
+ const norm0=n=>n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ /g,'.');
+ for(let d=-10;d>=-62;d--){const n=d>=-30?(R()<.25?3:R()<.7?2:1):(R()<.2?3:R()<.6?2:1);for(let k=0;k<n;k++)add(d)}
+})();
+// Appels non vus au premier lancement (badge)
+const DEMO_UNSEEN=[1,2,3];
+const PROFIL={prenom:'Julien',nom:'Martin',initiales:'JM',entreprise:'Martin Énergies',metier:'Installateur PAC · RGE QualiPAC',ville:'Lyon',numero_akno:'04 00 00 00 00'};
+/* ===================== FIN DES DONNÉES DE DÉMO ===================== */
+</script>
+<script src="app.js"></script>
+</body></html>
