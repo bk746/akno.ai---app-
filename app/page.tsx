@@ -16,6 +16,14 @@ export default function Home() {
   return (
     <>
       {AKNO_MARK}
+      <div className="akno-bg" aria-hidden />
+      <div id="ptr" aria-hidden="true">
+        <div className="ptr-ios">
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+            <i key={i} />
+          ))}
+        </div>
+      </div>
       <div id="app" />
       <div className="toast" id="toast" />
       <div id="layer" />
