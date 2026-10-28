@@ -5,12 +5,11 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;overscroll-behavior-y:none;overscroll-behavior-x:none;-webkit-overflow-scrolling:touch;background-color:#060a16}
 html{min-height:100%}
-body{font-family:'General Sans',system-ui,-apple-system,sans-serif;color:#fff;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;font-kerning:normal;min-height:100vh;background:transparent}
-.akno-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-color:var(--bg);
- background-image:radial-gradient(70% 38% at 15% -6%,rgba(64,98,210,.36),transparent 70%),radial-gradient(60% 32% at 95% 2%,rgba(110,80,220,.18),transparent 70%),linear-gradient(180deg,#0a1124 0%,#060a16 55%,#05080f 100%);background-attachment:fixed}
-.akno-bg::after{content:"";position:absolute;inset:0;opacity:.05;mix-blend-mode:overlay;
+body{font-family:'General Sans',system-ui,-apple-system,sans-serif;color:#fff;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;font-kerning:normal;min-height:100vh;background-color:#060a16}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-color:#060a16;
+ background-image:radial-gradient(70% 38% at 15% -6%,rgba(64,98,210,.36),transparent 70%),radial-gradient(60% 32% at 95% 2%,rgba(110,80,220,.18),transparent 70%),linear-gradient(180deg,#0a1124 0%,#060a16 55%,#05080f 100%);transform:translateZ(0)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;transform:translateZ(0);
  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-body::before{display:none}
 #ptr{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:50%;margin-left:-14px;z-index:60;width:28px;height:28px;pointer-events:none;opacity:0;transform:translateY(-100%);transition:opacity .15s ease-out,transform .15s ease-out}
 #ptr.vis{opacity:var(--ptr-o,1);transform:translateY(0)}
 .ptr-ios{width:28px;height:28px;position:relative}
