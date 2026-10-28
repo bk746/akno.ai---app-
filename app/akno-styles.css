@@ -145,6 +145,15 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;strok
 .dcard .acts{margin:24px 0}
 .sub-c{text-align:left;background:rgba(255,255,255,.04);border-radius:16px;padding:16px}
 .sub-c p{margin-top:8px;line-height:1.5}
+.rec-c{margin-top:12px}
+.rec-wrap{margin-top:8px}
+.rec-player{display:flex;align-items:center;gap:10px;margin-top:0}
+.rec-play{width:44px;height:44px;border-radius:50%;background:#fff;color:#070b17;display:grid;place-items:center;flex:none;padding:0}
+.rec-track{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.1);position:relative;cursor:pointer;touch-action:none}
+.rec-fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:2px;background:#fff;pointer-events:none}
+.rec-time{font-size:13px;color:#8f9ab8;font-variant-numeric:tabular-nums;white-space:nowrap;flex:none;min-width:72px;text-align:right}
+.rec-spd{font-size:13px;font-weight:500;color:#8f9ab8;flex:none;min-width:36px;text-align:center;padding:4px 0}
+.rec-err{display:none;margin-top:8px}
 .dcard .kvs{text-align:left;padding:4px 0}
 .dcard .grp-t{text-align:left}
 .stseg{display:grid;grid-template-columns:1fr 1fr;gap:8px}

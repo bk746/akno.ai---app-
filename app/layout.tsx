@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import "./akno.css";
 
@@ -43,8 +44,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             __html: `window.__AKNO_ENV=${aknoEnv}`,
           }}
         />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script
+          id="akno-sw-register"
+          strategy="afterInteractive"
+        >{`if("serviceWorker"in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}`}</Script>
+      </body>
     </html>
   );
 }

@@ -14,7 +14,7 @@ phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 
 cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
 spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
 gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 14H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 9.8 3.4V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.8 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9c.3.6.9 1 1.6 1H21a2 2 0 1 1 0 4h-.1c-.7 0-1.3.4-1.5 1z"/>',
-back:'<path d="M15 5 8 12l7 7"/>',chev:'<path d="M9 5l7 7-7 7"/>',plus:'<path d="M12 5v14M5 12h14"/>',
+back:'<path d="M15 5 8 12l7 7"/>',chev:'<path d="M9 5l7 7-7 7"/>',plus:'<path d="M12 5v14M5 12h14"/>',play:'<path d="M8 5v14l11-7z"/>',pause:'<rect x="7" y="5" width="4" height="14" rx="1"/><rect x="13" y="5" width="4" height="14" rx="1"/>',
 in:'<path d="M17 7 7 17M7 10v7h7"/>',out:'<path d="M7 17 17 7M10 7h7v7"/>',
 msg:'<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"/>',nav:'<path d="M3 11 21 3l-8 18-2-8z"/>',
 mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',check:'<path d="M5 12.5 10 17 19 7"/>',
@@ -24,6 +24,8 @@ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14
 user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',bell:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/>',
 out2:'<path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l-5-5 5-5M5 12h11"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>'};
 const I=(n,w=24,st='')=>`<svg class="i" viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"${st?` style="${st}"`:''} aria-hidden="true">${P[n]||""}</svg>`;
+const Ifill=(n,w=20,c='#070b17')=>`<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="${c}" aria-hidden="true">${P[n]||''}</svg>`;
+const recFmt=s=>{if(!isFinite(s)||s<0)s=0;return Math.floor(s/60)+':'+p2(Math.floor(s%60))};
 const PHF='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>';
 const MARK=(w=34,h=25)=>`<svg width="${w}" height="${h}" style="color:#fff;display:block" aria-label="Akno"><use href="#mark"/></svg>`;
 const JOURS=['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
@@ -166,12 +168,14 @@ function appelsList(sel){const ar=aRappeler().length;
  return head('Appels','',`<label class="search inp-s">${I('search',16)}<input id="aq" value="${esc(UI.aq)}" placeholder="Rechercher un client" aria-label="Rechercher un client" autocomplete="off"></label>`)+seg+callRows(filtered(),sel)+(DB.calls.length?`<p class="foot">${DB.calls.length} appel${DB.calls.length>1?'s':''} au total</p>`:'')}
 function vAppels(sel){if(isD()){const s=sel||filtered()[0]?.id;return `<div class="ap"><div class="list">${appelsList(s)}</div><aside class="detail">${s?detailBody(byId(s),true):'<div class="card empty">Sélectionnez un appel</div>'}</aside></div>`}
  return appelsList()}
+function recBlock(c){const u=(c.recording_url||'').trim();if(!u)return '';
+ return `<div class="sub-c rec-c"><div class="t13 mut">Enregistrement</div><div class="rec-wrap"><div class="rec-player" data-rec><audio preload="metadata" src="${esc(u)}" hidden></audio><button type="button" class="rec-play" aria-label="Lecture">${Ifill('play')}</button><div class="rec-track" role="slider" aria-label="Position" tabindex="0"><i class="rec-fill"></i></div><span class="rec-time">0:00 / 0:00</span><button type="button" class="rec-spd" aria-label="Vitesse de lecture">1x</button></div><p class="rec-err t13 mut">Enregistrement indisponible</p></div></div>`}
 function detailBody(c,desk){if(!c)return '<div class="card empty">Appel introuvable</div>';const rv=DB.rdvs.find(r=>r.call_id==c.id);const adr=[c.adresse,c.code_postal,c.ville].filter(Boolean).join(' ');
  const kv=rows=>rows.filter(r=>r[1]).map(([k,v])=>`<div class="kv"><span>${k}</span><span>${v}</span></div>`).join('');
  const stl={a_rappeler:'<span class="dot"></span>À rappeler',rappele:'Rappelé',rdv_pris:'RDV pris',traite:'Sans suite'}[c.statut]||'';
  return `<div class="card dcard"><div class="dh">${av(c,'xl')}<h2 class="dn">${esc(nomOf(c))}</h2><div class="t15 mut">${esc(c.telephone_client)} · ${cap(dayWord(c.created_at))}, ${hmTxt(c.created_at)}</div><span class="pill">${stl}</span></div>
  <div class="acts">${act('phone','Rappeler',`href="${telHref(c.telephone_client)}" data-stop`,true)}${act('msg','SMS',`href="sms:${esc(String(c.telephone_client).replace(/\s/g,''))}" data-stop`)}${rv?act('cal','RDV',`href="#/rdv/${rv.id}"`):act('cal','Planifier',`href="#" data-act="newrdv" data-call="${c.id}"`)}${act('pin','Itinéraire',`href="${maps(adr)}" target="_blank" rel="noopener" data-stop`)}</div>
- <div class="sub-c"><div class="t13 mut">Résumé par Akno</div><p class="t15">${esc(c.resume)||'—'}</p></div>
+ <div class="sub-c"><div class="t13 mut">Résumé par Akno</div><p class="t15">${esc(c.resume)||'—'}</p></div>${recBlock(c)}
  <div class="kvs">${kv([['Projet',esc(c.motif)],['Besoin',esc(c.besoin_detail)],['Urgence',c.urgence=='urgent'?'Urgent':'Normale'],['Durée',c.duration?durTxt(c.duration):''],['E-mail',c.email_client?`<a href="mailto:${esc(c.email_client)}" data-stop>${esc(c.email_client)}</a>`:''],['Adresse',adr?`<a href="${maps(adr)}" target="_blank" rel="noopener" data-stop>${esc(adr)}</a>`:''],['Rendez-vous',rv?`<a href="#/rdv/${rv.id}">${cap(dayWord(rv.rdv_date))} à ${hmTxt(rv.rdv_date)}</a>`:'']])}</div>
  <div class="grp-t in">Statut</div><div class="stseg">${Object.entries(ST).map(([k,l])=>`<button data-st="${k}" data-id="${c.id}" aria-pressed="${c.statut==k}" class="${c.statut==k?'on':''}">${l}</button>`).join('')}</div>
  <div class="grp-t in">Notes</div><textarea class="note" id="note" data-id="${c.id}" placeholder="Ajouter une note…">${esc(c.note)}</textarea></div>`}
@@ -337,9 +341,22 @@ function dashCountAnim(){if(_countRaf){cancelAnimationFrame(_countRaf);_countRaf
  if(!items.length)return;const t0=performance.now(),dur=600,ease=t=>1-Math.pow(1-t,3);items.forEach(it=>{if(it.kind==='text')it.el.textContent='0';else it.el.style.width='0%'});
  const frame=now=>{const p=Math.min(1,(now-t0)/dur),e=ease(p);items.forEach(it=>{if(it.kind==='text')it.el.textContent=String(Math.round(e*it.target));else it.el.style.width=e*it.target+'%'});if(p<1)_countRaf=requestAnimationFrame(frame);else{_countRaf=0;settleCounts()}};_countRaf=requestAnimationFrame(frame)}
 function staggerPage(){if(!motionOk())return;const sel='#page .hero,#page .acts,#page .stats .stat,#page .card';[...document.querySelectorAll(sel)].slice(0,6).forEach((el,i)=>{el.style.setProperty('--i',i);el.classList.add('ak-stagger')})}
-function afterRouteFx(tab){requestAnimationFrame(()=>layoutNavPills(tab));const page=$('#page');if(!page)return;if(_routeKeep){page.classList.add('noanim');if(tab===0)settleCounts();if(tab===3)requestAnimationFrame(scrollAsChatEnd);return}page.classList.remove('noanim');staggerPage();if(tab===0)dashCountAnim();if(tab===3)requestAnimationFrame(scrollAsChatEnd)}
+function afterRouteFx(tab){requestAnimationFrame(()=>layoutNavPills(tab));const page=$('#page');if(!page)return;if(_routeKeep){page.classList.add('noanim');if(tab===0)settleCounts();if(tab===3)requestAnimationFrame(scrollAsChatEnd);initCallRec();return}page.classList.remove('noanim');staggerPage();if(tab===0)dashCountAnim();if(tab===3)requestAnimationFrame(scrollAsChatEnd);initCallRec()}
 document.addEventListener('visibilitychange',()=>{if(_countRaf){cancelAnimationFrame(_countRaf);_countRaf=0}settleCounts()});
-function routeRender(keep,h,y){ensureChrome();const{tab,body,extra}=viewForHash(h);if(!_navLed){syncNavTab(tab);layoutNavPills(tab)}else _navLed=false;
+let _callRecAudio=null;
+function pauseCallRec(){document.querySelectorAll('.rec-player audio').forEach(a=>{a.pause();a.currentTime=a.currentTime});if(_callRecAudio){_callRecAudio.pause();_callRecAudio=null}}
+function initCallRec(){const wrap=document.querySelector('[data-rec]');if(!wrap||wrap.dataset.recInit)return;wrap.dataset.recInit='1';const audio=wrap.querySelector('audio'),playBtn=wrap.querySelector('.rec-play'),track=wrap.querySelector('.rec-track'),fill=wrap.querySelector('.rec-fill'),timeEl=wrap.querySelector('.rec-time'),spdBtn=wrap.querySelector('.rec-spd'),errEl=wrap.closest('.rec-wrap')?.querySelector('.rec-err');const speeds=[1,1.5,2];let spdI=0,drag=false;
+ const setPlayUi=on=>{playBtn.innerHTML=on?Ifill('pause'):Ifill('play');playBtn.setAttribute('aria-label',on?'Pause':'Lecture');if(on){document.querySelectorAll('.rec-player audio').forEach(a=>{if(a!==audio)a.pause()});_callRecAudio=audio}else if(_callRecAudio===audio)_callRecAudio=null};
+ const syncUi=()=>{const d=audio.duration||0,cur=audio.currentTime||0,t=d?cur/d*100:0;fill.style.width=t+'%';timeEl.textContent=recFmt(cur)+' / '+recFmt(d);track.setAttribute('aria-valuenow',String(Math.round(t)))};
+ const fail=()=>{wrap.style.display='none';if(errEl)errEl.style.display='block'};
+ const seek=p=>{if(!audio.duration)return;audio.currentTime=Math.max(0,Math.min(1,p))*audio.duration;syncUi()};
+ audio.addEventListener('error',fail);audio.addEventListener('loadedmetadata',syncUi);audio.addEventListener('timeupdate',syncUi);audio.addEventListener('ended',()=>setPlayUi(false));
+ playBtn.addEventListener('click',()=>{if(audio.error)return fail();if(audio.paused){audio.play().then(()=>setPlayUi(true)).catch(fail)}else{audio.pause();setPlayUi(false)}});
+ spdBtn.addEventListener('click',()=>{spdI=(spdI+1)%speeds.length;audio.playbackRate=speeds[spdI];spdBtn.textContent=speeds[spdI]===1?'1x':speeds[spdI]+'x'});
+ const pos=e=>{const r=track.getBoundingClientRect();return r.width?(e.clientX-r.left)/r.width:0};
+ track.addEventListener('click',e=>seek(pos(e)));track.addEventListener('pointerdown',e=>{drag=true;track.setPointerCapture(e.pointerId);seek(pos(e))});track.addEventListener('pointermove',e=>{if(drag)seek(pos(e))});track.addEventListener('pointerup',()=>{drag=false});track.addEventListener('pointercancel',()=>{drag=false});
+ if(audio.error)fail()}
+function routeRender(keep,h,y){pauseCallRec();ensureChrome();const{tab,body,extra}=viewForHash(h);if(!_navLed){syncNavTab(tab);layoutNavPills(tab)}else _navLed=false;
  const openDsheet=!isD()&&h.startsWith('#/appel/'),wasDsheet=!isD()&&last.startsWith('#/appel/');
  if(openDsheet&&!wasDsheet)lockScroll();
  $('#page').innerHTML=`<div class="wrap">${body}</div>`+extra;
@@ -388,7 +405,7 @@ setInterval(()=>{if((location.hash=='#/agenda'||location.hash==''||location.hash
 /* ===================== Mode réel : Supabase ===================== */
 let sb=null,SNAP=null,USER=null;
 const CALL_SYNC=['statut','note','rdv_date'];
-const rowToCall=r=>({id:r.id,nom_client:r.nom_client||'',telephone_client:r.telephone_client||'',motif:r.motif||'Autre',besoin_detail:r.besoin_detail||'',code_postal:r.code_postal||'',ville:r.ville||'',adresse:r.adresse||'',email_client:r.email_client||'',rdv_date:r.rdv_date,urgence:r.urgence||'normal',duration:r.duration||0,resume:r.resume||r.besoin_detail||'',statut:r.statut=='renseigne'?'traite':(r.statut||'a_rappeler'),note:r.notes||'',created_at:r.created_at});
+const rowToCall=r=>({id:r.id,nom_client:r.nom_client||'',telephone_client:r.telephone_client||'',motif:r.motif||'Autre',besoin_detail:r.besoin_detail||'',code_postal:r.code_postal||'',ville:r.ville||'',adresse:r.adresse||'',email_client:r.email_client||'',rdv_date:r.rdv_date,urgence:r.urgence||'normal',duration:r.duration||0,resume:r.resume||r.besoin_detail||'',statut:r.statut=='renseigne'?'traite':(r.statut||'a_rappeler'),note:r.notes||'',created_at:r.created_at,recording_url:r.recording_url||''});
 const TYPE_RE=/^\[(Visite devis|Panne|Entretien|Installation)\]\s*/;
 const rowToRdv=r=>{const m=(r.title||'').match(TYPE_RE);const rp=/\[rappel-sms\]/.test(r.notes||'');return{id:r.id,call_id:r.call_id,nom_client:r.client||'',telephone_client:r.telephone_client||'',type:m?m[1]:'Visite devis',motif:(r.title||'').replace(TYPE_RE,'')||'Rendez-vous',rdv_date:r.start,duree:Math.max(15,Math.round((new Date(r.end)-new Date(r.start))/6e4))||60,adresse:[r.adresse,r.ville].filter(Boolean).join(', '),note:(r.notes||'').replace(/\s*\[rappel-sms\]/,''),rappel:rp}};
 const rdvToRow=r=>({artisan_id:USER.id,call_id:r.call_id||null,title:'['+r.type+'] '+(r.motif||''),client:r.nom_client,telephone_client:r.telephone_client||null,start:r.rdv_date,end:new Date(new Date(r.rdv_date).getTime()+(r.duree||60)*6e4).toISOString(),adresse:r.adresse||null,notes:((r.note||'')+(r.rappel?' [rappel-sms]':'')).trim()||null});
@@ -406,7 +423,7 @@ function applyCloudPayload(a,c,r){if(c.error||r.error){toast('Impossible de char
  Object.assign(PROFIL,{prenom:pr,nom:'',initiales:ini(pr+' '+(pf.nom_entreprise||'')),entreprise:pf.nom_entreprise||'',telephone:pf.telephone||'',email:pf.email||USER.email||''});
  let p={};try{p=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){}
  DB={calls:(c.data||[]).map(rowToCall),rdvs:(r.data||[]).map(rowToRdv),chat:p.chat||[],notif:p.notif||{nouveaux:true,urgents:true,resume:false}};SNAP=snap()}
-async function fetchCloudRows(){return Promise.all([sb.from('artisans').select('*').eq('id',USER.id).maybeSingle(),sb.from('calls').select('*').order('created_at',{ascending:false}).limit(500),sb.from('appointments').select('*').order('start')])}
+async function fetchCloudRows(){return Promise.all([sb.from('artisans').select('*').eq('id',USER.id).maybeSingle(),sb.from('calls').select('id,nom_client,telephone_client,motif,besoin_detail,code_postal,ville,adresse,email_client,rdv_date,urgence,duration,resume,statut,notes,created_at,recording_url').order('created_at',{ascending:false}).limit(500),sb.from('appointments').select('*').order('start')])}
 async function cloudLoad(){const[a,c,r]=await fetchCloudRows();applyCloudPayload(a,c,r);
  if(!_callsSub){_callsSub=true;sb.channel('calls').on('postgres_changes',{event:'INSERT',schema:'public',table:'calls'},e=>{const x=rowToCall(e.new);if(DB.calls.some(y=>y.id==x.id))return;DB.calls.push(x);SNAP=snap();toast('Nouvel appel · '+nomOf(x));if(!$('#layer').innerHTML)route(true)}).subscribe()}}
 async function refreshCurrentPage(){const t0=performance.now();if(CLOUD&&sb&&USER){const[a,c,r]=await fetchCloudRows();applyCloudPayload(a,c,r)}else load();route(true);const wait=Math.max(0,500-(performance.now()-t0));if(wait)await new Promise(r=>setTimeout(r,wait))}
