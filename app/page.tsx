@@ -1,4 +1,5 @@
 import Script from "next/script";
+import AknoDevisPdfBridge from "@/components/devis/AknoDevisPdfBridge";
 
 const AKNO_MARK = (
   <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden>
@@ -26,6 +27,7 @@ export default function Home() {
       <div id="app" />
       <div className="toast" id="toast" />
       <div id="layer" />
+      <AknoDevisPdfBridge />
       <Script src="/akno/app.js" strategy="afterInteractive" />
     </>
   );

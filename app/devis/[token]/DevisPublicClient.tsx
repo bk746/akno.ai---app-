@@ -2,6 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import {
+  normalizeDevisPublicRpc,
+  publicRpcToPdfPayload,
+} from "@/lib/devis/devisPdfTypes";
 import "./devis-public.css";
 
 type Ligne = {
@@ -22,10 +26,17 @@ export type DevisPublicData = {
   statut: string;
   relance_count?: number;
   envoye_le?: string | null;
+  created_at?: string | null;
   reponse?: string | null;
   repondu_le?: string | null;
   entreprise?: string;
   artisan_prenom?: string;
+  entreprise_nom?: string;
+  devis_validite_jours?: number;
+  devis_conditions?: string;
+  devis_mentions?: string;
+  logo_url?: string | null;
+  [key: string]: unknown;
 };
 
 function fmtEur(n: number) {
@@ -59,6 +70,7 @@ export default function DevisPublicClient({
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [pdfBusy, setPdfBusy] = useState(false);
 
   const sb = useMemo(
     () => createClient(supabaseUrl, supabaseAnonKey),
@@ -76,6 +88,10 @@ export default function DevisPublicClient({
   const answered = !!data?.reponse;
   const canRespond =
     data && !answered && ["envoye", "relance"].includes(data.statut);
+
+  const validiteJours = Number(data?.devis_validite_jours) || 30;
+  const coName =
+    data?.entreprise_nom || data?.entreprise || "Akno";
 
   async function repondre(reponse: "accepte" | "refuse") {
     setBusy(true);
@@ -109,6 +125,24 @@ export default function DevisPublicClient({
     );
   }
 
+  async function downloadPdf() {
+    if (!data) return;
+    setPdfBusy(true);
+    try {
+      const { base, ent } = normalizeDevisPublicRpc(
+        data as unknown as Record<string, unknown>,
+      );
+      const payload = publicRpcToPdfPayload(
+        base as Record<string, unknown>,
+        ent,
+      );
+      const { downloadDevisPdf } = await import("@/lib/devis/downloadDevisPdf");
+      await downloadDevisPdf(payload);
+    } finally {
+      setPdfBusy(false);
+    }
+  }
+
   if (!data) {
     return (
       <div className="devis-pub">
@@ -134,7 +168,7 @@ export default function DevisPublicClient({
         <div className="devis-pub-h">
           <div>
             <p className="devis-pub-meta" style={{ textAlign: "left" }}>
-              {data.entreprise || "Akno"}
+              {coName}
             </p>
             <h1>Devis {data.numero}</h1>
             <p style={{ marginTop: 8, color: "#374151" }}>{data.objet}</p>
@@ -199,7 +233,9 @@ export default function DevisPublicClient({
           </div>
         </div>
 
-        <p className="devis-pub-note">Devis valable 30 jours à compter de la date d&apos;envoi.</p>
+        <p className="devis-pub-note">
+          Devis valable {validiteJours} jours à compter de la date d&apos;envoi.
+        </p>
 
         {msg ? (
           <p className={`devis-pub-msg${err ? " devis-pub-err" : ""}`}>{msg}</p>
@@ -209,9 +245,10 @@ export default function DevisPublicClient({
           <button
             type="button"
             className="print"
-            onClick={() => window.print()}
+            disabled={pdfBusy}
+            onClick={() => downloadPdf()}
           >
-            Télécharger en PDF
+            {pdfBusy ? "Génération…" : "Télécharger le PDF"}
           </button>
           {canRespond ? (
             <>

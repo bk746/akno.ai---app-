@@ -625,6 +625,20 @@ button.kv{color:#fff}
 .devis-wizard>.ov[data-act=devislineclose]{z-index:2}
 .dw-sub-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .dw-sub-h b{font-size:17px;font-weight:600}
+.dw-ent-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 20px 8px;padding:10px 14px;border-radius:14px;background:rgba(255,193,94,.12);color:#ffc15e;font-size:13px;font-weight:500;flex:none}
+.dw-ent-banner a{color:#fff;font-weight:600;text-decoration:underline}
+.set-ent{padding:0 16px 18px;margin-bottom:16px}
+.set-ent .set-sec.in{margin:16px 0 8px 4px;font-size:13px;font-weight:500;color:var(--mut)}
+.set-ent-f,.set-ent-ta{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;padding:8px 0;width:100%}
+.set-ent-ta{align-items:flex-start;flex-direction:column}
+.set-ent-ta textarea{width:100%;min-height:72px;border:0;background:var(--raise);border-radius:12px;padding:10px 12px;font-size:15px;resize:vertical}
+.set-ent-f+.set-ent-f,.set-ent-f+.set-ent-ta,.set-ent-ta+.set-ent-f{box-shadow:inset 0 1px 0 var(--line)}
+.set-ent-f>span{color:var(--mut);font-size:15px;flex:none;max-width:42%}
+.set-ent-f input{flex:1;border:0;background:none;outline:0;font-size:15px;text-align:right;min-width:0}
+.set-ent-logo{display:flex;align-items:center;gap:14px;padding:16px 0;box-shadow:inset 0 1px 0 var(--line);margin-bottom:4px}
+.set-ent-logo-img{width:56px;height:56px;object-fit:contain;border-radius:12px;background:#fff}
+.set-ent-upload span{display:inline-flex;height:36px;padding:0 14px;border-radius:99px;background:rgba(255,255,255,.08);font-size:13px;font-weight:500;align-items:center;cursor:pointer}
+.set-ent-save{margin-top:16px}
 .dw-sub-f{margin-bottom:12px}
 .dw-qty{display:flex;justify-content:space-between;align-items:center;margin:16px 0}
 .dw-qty-btns{display:flex;align-items:center;gap:16px}

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { normalizeDevisPublicRpc } from "@/lib/devis/devisPdfTypes";
 import DevisPublicClient, { type DevisPublicData } from "./DevisPublicClient";
 
 export const instant = false;
@@ -19,7 +20,12 @@ export default async function DevisPublicPage({ params }: PageProps) {
     const { data } = await supabase.rpc("devis_public", {
       p_token: token,
     });
-    if (data && typeof data === "object") initial = data as DevisPublicData;
+    if (data && typeof data === "object") {
+      const { base, ent } = normalizeDevisPublicRpc(
+        data as Record<string, unknown>,
+      );
+      initial = { ...base, ...ent } as DevisPublicData;
+    }
   }
 
   return (
