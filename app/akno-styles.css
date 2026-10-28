@@ -98,9 +98,9 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;strok
 /* bottom glass navbar (mobile) */
  .nav{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));height:var(--navh);border-radius:32px;padding:6px;display:grid;grid-template-columns:repeat(5,1fr);z-index:40;view-transition-name:none;isolation:isolate;
  background:rgba(14,18,32,.93);backdrop-filter:blur(40px) saturate(160%);-webkit-backdrop-filter:blur(40px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 16px 40px -8px rgba(0,0,0,.6)}
-.nav-pill,.nav-pill-m,.snav-pill{position:absolute;top:0;left:0;width:0;height:48px;border-radius:14px;background:rgba(255,255,255,.08);pointer-events:none;z-index:0;will-change:transform;transition:transform .42s cubic-bezier(.32,.72,0,1),height .42s cubic-bezier(.32,.72,0,1),width .42s cubic-bezier(.32,.72,0,1)}
-.nav-pill-m{border-radius:26px}
-.nav a{position:relative;z-index:1;justify-self:center;min-width:0;width:100%;max-width:72px;padding:6px 12px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;line-height:1;color:#8f9ab8;background:transparent;transition:color .25s ease,transform .12s ease}
+.nav-pill,.snav-pill{position:absolute;top:0;left:0;width:0;height:48px;border-radius:14px;background:rgba(255,255,255,.08);pointer-events:none;z-index:0;will-change:transform;transition:transform .42s cubic-bezier(.32,.72,0,1),height .42s cubic-bezier(.32,.72,0,1),width .42s cubic-bezier(.32,.72,0,1)}
+.nav-pill-rail,.nav-pill-slot{display:none}
+.nav a{position:relative;z-index:1;justify-self:center;min-width:0;width:100%;max-width:72px;padding:6px 12px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:500;line-height:1;color:rgba(255,255,255,.55);background:transparent;transition:color .25s ease,transform .12s ease}
 .nav a svg{width:24px;height:24px;line-height:1;margin:0;padding:0;transition:color .25s ease}
 .nav a span{line-height:1;margin:0;padding:0;transition:color .25s ease}
 .nav a.on{color:#fff}
@@ -245,16 +245,18 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;strok
  #layer .sheet-body{max-height:none;flex:1}
  .card{padding:18px;width:100%;box-sizing:border-box}
  .set-card.card{padding:18px}
- .nav{left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 8px);height:var(--navh);display:grid;grid-template-columns:repeat(5,1fr);padding:4px 6px;align-items:center;background:rgba(20,22,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);box-shadow:none;transition:height 250ms cubic-bezier(.32,.72,0,1),transform 250ms cubic-bezier(.32,.72,0,1),opacity 250ms cubic-bezier(.32,.72,0,1)}
- .nav a{justify-self:stretch;width:100%;max-width:none;height:56px;min-height:56px;max-height:56px;margin:0;padding:0;gap:4px;border-radius:26px;flex-direction:column;align-items:center;justify-content:center;font-size:12px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:height 250ms cubic-bezier(.32,.72,0,1),gap 250ms cubic-bezier(.32,.72,0,1),color 250ms ease}
- .nav a svg{width:24px;height:24px}
- .nav a span{transition:opacity 250ms cubic-bezier(.32,.72,0,1),max-height 250ms cubic-bezier(.32,.72,0,1),margin 250ms cubic-bezier(.32,.72,0,1)}
+ .nav{left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 8px);height:var(--navh);display:grid;grid-template-columns:repeat(5,1fr);padding:4px 0;align-items:stretch;position:fixed;background:rgba(20,22,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);box-shadow:none;transition:height 220ms cubic-bezier(.2,.8,.2,1),left 220ms cubic-bezier(.2,.8,.2,1),right 220ms cubic-bezier(.2,.8,.2,1),transform 220ms cubic-bezier(.2,.8,.2,1),opacity 220ms cubic-bezier(.2,.8,.2,1)}
+ body.nav-compact{--navh:52px}
+ body.nav-compact .nav{left:40px;right:40px}
+ .nav-pill-rail{display:block;position:absolute;inset:0;pointer-events:none;z-index:0;transition:opacity 220ms cubic-bezier(.2,.8,.2,1)}
+ .nav-pill-slot{display:block;position:absolute;top:4px;left:0;width:20%;height:calc(100% - 8px);transform:translateX(calc(var(--nav-idx,0) * 100%));transition:transform 220ms cubic-bezier(.2,.8,.2,1);will-change:transform}
+ .nav-pill-m{position:absolute;inset:0 auto 0 6px;width:calc(100% - 12px);height:100%;margin:0;border-radius:999px;background:rgba(255,255,255,.08);transition:none}
+ .nav a{justify-self:stretch;align-self:stretch;width:100%;max-width:none;height:auto;min-height:0;max-height:none;margin:0;padding:0;gap:2px;border-radius:0;flex-direction:column;align-items:center;justify-content:center;font-size:11px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;color:rgba(255,255,255,.55);transition:color 220ms cubic-bezier(.2,.8,.2,1),transform .12s ease}
+ .nav a svg{width:22px;height:22px;flex:none}
+ .nav a span{display:block;max-height:1.2em;overflow:hidden;transition:opacity 220ms cubic-bezier(.2,.8,.2,1),max-height 220ms cubic-bezier(.2,.8,.2,1),margin 220ms cubic-bezier(.2,.8,.2,1)}
  .nav a.on{color:#fff}
  .nav a.on span{font-weight:600}
- .nav-pill-m{width:calc((100% - 12px)/5);height:56px;left:6px;top:50%;margin-top:-28px;border-radius:26px;transition:transform 250ms cubic-bezier(.32,.72,0,1),width 250ms cubic-bezier(.32,.72,0,1),height 250ms cubic-bezier(.32,.72,0,1)!important}
- body.nav-compact{--navh:52px}
- body.nav-compact .nav a{height:52px;min-height:52px;max-height:52px;gap:0}
- body.nav-compact .nav a span{opacity:0;max-height:0;margin:0;overflow:hidden}
+ body.nav-compact .nav a span{opacity:0;max-height:0;height:0;margin:0}
  .toast{top:auto;bottom:calc(16px + var(--navh) + 12px + env(safe-area-inset-bottom));transform:translate(-50%,calc(100% + 24px));transition:transform .25s cubic-bezier(.2,.8,.2,1),opacity .25s ease}
  .toast:not(.sh){opacity:0;visibility:hidden;pointer-events:none}
  .toast.sh{transform:translate(-50%,0);opacity:1;visibility:visible}
