@@ -21,6 +21,8 @@ mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
 pin:'<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',up:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
 shield:'<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
 mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',send:'<path d="M12 19V5M6 11l6-6 6 6"/>',
+doc:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+trash:'<path d="M4 7h16M9 7V5h6v2M7 7l1 12h8l1-12"/>',
 user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',bell:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/>',
 out2:'<path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l-5-5 5-5M5 12h11"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>'};
 const I=(n,w=24,st='')=>`<svg class="i" viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"${st?` style="${st}"`:''} aria-hidden="true">${P[n]||""}</svg>`;
@@ -80,11 +82,13 @@ function demo(){const t=(j,h,m)=>{const x=addD(new Date(),j);x.setHours(h,m,0,0)
   if(c[13]){const r=c[13];x.rdv_date=t(r[0],r[1],r[2]);rdvs.push({id:'r'+id,call_id:id,nom_client:x.nom_client,telephone_client:x.telephone_client,type:r[4],motif:x.motif,rdv_date:x.rdv_date,duree:r[3],adresse:x.adresse+', '+x.code_postal+' '+x.ville,note:'',rappel:true})}
   calls.push(x)});
  rdvs.push({id:'r100',call_id:null,nom_client:'Gérard Blanc',telephone_client:'06 32 14 58 96',type:'Installation',motif:'Installation PAC',rdv_date:t(1,14,0),duree:120,adresse:'12 rue Bossuet, 69006 Lyon',note:'Pose de l\'unité extérieure.',rappel:false});
- return {calls,rdvs,chat:[],notif:{nouveaux:true,urgents:true,resume:false}}}
+ const devis=[{id:'d1',numero:'D-'+new Date().getFullYear()+'-0001',statut:'envoye',relance_count:1,client_nom:'Julie Moreau',client_email:'julie.moreau@exemple.fr',client_telephone:'07 61 22 33 44',client_adresse:'3 place Bellecour, 69002 Lyon',objet:'Climatisation réversible — 3 pièces',lignes:[{designation:'Unité intérieure',quantite:3,prix_unitaire_ht:420},{designation:'Unité extérieure',quantite:1,prix_unitaire_ht:1850},{designation:'Pose et mise en service',quantite:1,prix_unitaire_ht:890}],tva_taux:10,token:'00000000-0000-4000-8000-000000000001',call_id:4,envoye_le:t(-1,12,0),relance_le:t(0,9,0),repondu_le:null,reponse:null,created_at:t(-2,10,0),updated_at:t(-1,12,0)},
+ {id:'d2',numero:'D-'+new Date().getFullYear()+'-0002',statut:'brouillon',relance_count:0,client_nom:'Thomas Bernard',client_email:'thomas.bernard@exemple.fr',client_telephone:'06 45 12 87 33',client_adresse:'17 chemin du Moulin, 69130 Écully',objet:'Installation PAC air-eau',lignes:[{designation:'PAC air-eau 8 kW',quantite:1,prix_unitaire_ht:7200},{designation:'Installation',quantite:1,prix_unitaire_ht:2400}],tva_taux:20,token:'00000000-0000-4000-8000-000000000002',call_id:5,envoye_le:null,relance_le:null,repondu_le:null,reponse:null,created_at:t(-1,15,0),updated_at:t(-1,15,0)}];
+ return {calls,rdvs,devis,chat:[],notif:{nouveaux:true,urgents:true,resume:false}}}
 
 /* ============================ ÉTAT ============================ */
 let DB;
-function load(){try{const s=JSON.parse(localStorage.getItem(LS)||'null');if(s&&s.calls&&s.rdvs){DB=s;return}}catch(e){}DB=demo();save()}
+function load(){try{const s=JSON.parse(localStorage.getItem(LS)||'null');if(s&&s.calls&&s.rdvs){if(!s.devis)s.devis=[];DB=s;return}}catch(e){}DB=demo();save()}
 function save(){if(CLOUD){cloudSync();try{localStorage.setItem(LS,JSON.stringify({chat:DB.chat,notif:DB.notif}))}catch(e){}return}try{localStorage.setItem(LS,JSON.stringify(DB))}catch(e){}}
 const byId=id=>DB.calls.find(c=>String(c.id)==String(id));
 const rdvById=id=>DB.rdvs.find(r=>String(r.id)==String(id));
@@ -104,6 +108,7 @@ function patchPushUi(){const btn=document.querySelector('.set-push-btn[data-act=
 async function refreshPushState(){if(!CLOUD||!sb||!USER){UI.pushSubscribed=false;return}const{data,error}=await sb.from('push_subscriptions').select('endpoint').limit(1);if(!error)UI.pushSubscribed=!!(data&&data.length);patchPushUi()}
 async function activatePush(){UI.pushMsg='';const vapid=_ENV.NEXT_PUBLIC_VAPID_PUBLIC_KEY;if(!CLOUD||!sb){UI.pushMsg='Connectez-vous pour activer les notifications.';route(true);return}if(!vapid){UI.pushMsg='Notifications push non configurées sur ce déploiement.';route(true);return}if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window)){UI.pushMsg='Non supporté sur ce navigateur.';route(true);return}if(isIos()&&!isStandalone()){UI.pushMsg='Sur iPhone, ajoutez Akno à l\'écran d\'accueil (Partager → Sur l\'écran d\'accueil), puis réessayez.';route(true);return}const perm=await Notification.requestPermission();if(perm!=='granted'){UI.pushMsg=perm==='denied'?'Notifications bloquées : autorisez-les dans les réglages du navigateur.':'Autorisation refusée.';route(true);return}try{const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:vapidToUint8(vapid)});const j=sub.toJSON();const{error}=await sb.from('push_subscriptions').upsert({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth},{onConflict:'endpoint'});if(error){console.warn(error);toast('Impossible d\'enregistrer l\'abonnement');return}UI.pushSubscribed=true;UI.pushMsg='';toast('Notifications activées');route(true)}catch(e){console.warn(e);UI.pushMsg=isIos()&&!isStandalone()?'Sur iPhone, installez l\'app sur l\'écran d\'accueil puis réessayez.':'Activation impossible. Réessayez plus tard.';route(true)}}
 const MAIN_TABS=[['home','Accueil','#/'],['phone','Appels','#/appels'],['cal','Agenda','#/agenda'],['spark','Assistant','#/assistant']];
+const SIDE_TABS=[['home','Accueil','#/'],['phone','Appels','#/appels'],['cal','Agenda','#/agenda'],['doc','Devis','#/devis'],['spark','Assistant','#/assistant']];
 const TABS=[...MAIN_TABS,['gear','Réglages','#/reglages']];
 const AVC=['#3a4d86','#2f6b62','#6a4b8a','#7a5a3a','#3a6a86','#5a4f86','#86503a','#3f6a4a'];
 const avCol=s=>{let h=0;for(const ch of String(s||''))h=(h*31+ch.charCodeAt(0))>>>0;return AVC[h%AVC.length]};
@@ -114,22 +119,24 @@ const tmTxt=d=>{const n=dd(new Date(),d);return n==0?hmList(d):n==1?'Hier':n<7?c
 const viewMode=()=>UI.view||(isD()?'semaine':'jour');
 const sideAccountHtml=()=>`<span class="ini sm" style="background:#2a3c6e">${esc(PROFIL.initiales)}</span><span class="lbl"><b>${esc((PROFIL.prenom+' '+(PROFIL.nom||'')).trim())}</b><small>${esc(PROFIL.entreprise||'')}</small></span>`;
 let _chrome=false,_pillPrimed=false,_navLed=false;
-function buildChromeHtml(){const sn=MAIN_TABS.map(([i,l,h])=>`<a href="${h}" aria-label="${l}">${I(i,22)}<span class="lbl">${l}</span></a>`).join('');const mb=TABS.map(([i,l,h])=>`<a href="${h}" aria-label="${l}">${I(i,24)}<span>${l}</span></a>`).join('');
+function buildChromeHtml(){const sn=SIDE_TABS.map(([i,l,h])=>`<a href="${h}" aria-label="${l}">${I(i,22)}<span class="lbl">${l}</span></a>`).join('');const mb=TABS.map(([i,l,h])=>`<a href="${h}" aria-label="${l}">${I(i,24)}<span>${l}</span></a>`).join('');
  return `<aside class="side"><div class="lg">${MARK(40,29)}</div><nav class="snav" aria-label="Navigation"><span class="nav-pill snav-pill" aria-hidden="true"></span>${sn}</nav><div class="side-foot"><a class="acc" href="#/reglages">${sideAccountHtml()}</a><a class="set-btn" href="#/reglages" aria-label="Réglages">${I('gear',24)}</a></div></aside><main id="page"></main><nav class="nav" aria-label="Navigation"><span class="nav-pill nav-pill-m" aria-hidden="true"></span>${mb}</nav>`}
 function ensureChrome(){if(_chrome||document.body.classList.contains('is-login'))return;const app=$('#app');if(!app.querySelector('.side')){app.innerHTML=buildChromeHtml();_chrome=true;_pillPrimed=false}}
-function syncNavTab(tab){const sn=$('.snav');if(sn)sn.querySelectorAll('a').forEach((a,k)=>{const on=tab<4&&tab===k;a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
- const nv=$('.nav');if(nv)nv.querySelectorAll('a').forEach((a,k)=>{const on=tab===k;a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
- const setBtn=$('.set-btn');if(setBtn){setBtn.classList.toggle('on',tab===4)}const acc=$('.side-foot .acc');if(acc)acc.innerHTML=sideAccountHtml()}
-function navLead(tab){_navLed=true;syncNavTab(tab);layoutNavPills(tab,false)}
-function viewForHash(h){let tab=0,m,body,extra='';
- if(h.startsWith('#/appel/')){[body,extra]=vDetail(decodeURIComponent(h.slice(8)));tab=1}
- else if(h=='#/appels'){body=vAppels();tab=1}
- else if(h=='#/agenda'){body=vAgenda();tab=2}
- else if(m=h.match(/^#\/rdv\/(.+)/)){body=vRdv(decodeURIComponent(m[1]));tab=2}
- else if(h=='#/assistant'){body=vAssistant();extra=innerWidth<768?asMobileExtra():'';tab=3}
- else if(h=='#/reglages'){body=vReglages();tab=4}
- else{body=vDash();tab=0}
- return {tab,body,extra}}
+function syncNavTab(mobTab,sideTab){const st=sideTab==null?mobTab:sideTab;const sn=$('.snav');if(sn)sn.querySelectorAll('a').forEach((a,k)=>{const on=st!=null&&st>=0&&st<5&&st===k;a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
+ const nv=$('.nav');if(nv)nv.querySelectorAll('a').forEach((a,k)=>{const on=mobTab===k;a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
+ const setBtn=$('.set-btn');if(setBtn){setBtn.classList.toggle('on',mobTab===4)}const acc=$('.side-foot .acc');if(acc)acc.innerHTML=sideAccountHtml()}
+function navLead(mobTab,sideTab){_navLed=true;syncNavTab(mobTab,sideTab);layoutNavPills(mobTab,sideTab,false)}
+function viewForHash(h){let tab=0,sideTab=0,m,body,extra='';
+ if(h.startsWith('#/appel/')){[body,extra]=vDetail(decodeURIComponent(h.slice(8)));tab=1;sideTab=1}
+ else if(h=='#/appels'){body=vAppels();tab=1;sideTab=1}
+ else if(h=='#/agenda'){body=vAgenda();tab=2;sideTab=2}
+ else if(m=h.match(/^#\/rdv\/(.+)/)){body=vRdv(decodeURIComponent(m[1]));tab=2;sideTab=2}
+ else if(h=='#/devis'){body=vDevis();tab=-1;sideTab=3}
+ else if(m=h.match(/^#\/devis\/(.+)/)){body=vDevisDetail(decodeURIComponent(m[1]));tab=-1;sideTab=3}
+ else if(h=='#/assistant'){body=vAssistant();extra=innerWidth<768?asMobileExtra():'';tab=3;sideTab=4}
+ else if(h=='#/reglages'){body=vReglages();tab=4;sideTab=null}
+ else{body=vDash();tab=0;sideTab=0}
+ return {tab,sideTab,body,extra}}
 const head=(title,sub,right='')=>`<header class="top"><div class="tl">${sub?`<div class="t13 mut fw5">${sub}</div>`:''}<h1 class="h1">${title}</h1></div><div class="tr">${right}</div></header>`;
 const act=(icon,label,attrs,white)=>`<a class="act${white?' w':''}" ${attrs}><i>${I(icon,22)}</i><span>${label}</span></a>`;
 const callLi=(c,o={})=>{const ar=c.statut=='a_rappeler';
@@ -151,7 +158,7 @@ function vDash(){const now=new Date(),w=week(),ar=aRappeler(),up=upcoming(),nx=u
  <div class="tr"><a class="search" href="#/appels">${I('search',16)}<span>Rechercher</span></a><a class="ib" href="#/appels" aria-label="Notifications">${I('bell',20)}${ar.length?'<i class="bdg"></i>':''}</a></div></header>`;
  const hero=`<section class="hero"><div class="hlft"><div class="t13 mut fw5">${esc(PROFIL.entreprise||'Akno')} · 7 derniers jours</div><div class="big"><span class="hero-n" data-n="${w.length}" data-anim-key="hero-calls">${w.length}</span> <small>appel${w.length>1?'s':''}</small></div>
  ${ar.length?`<a class="pill" href="#/appels" data-f="ar"><span class="dot"></span>${ar.length} client${ar.length>1?'s':''} à rappeler</a>`:`<span class="pill">Tout est à jour</span>`}</div>
- <div class="acts">${act('phone','Rappeler',ar.length?`href="#/appel/${ar[0].id}"`:'href="#/appels"',true)}${act('cal','Agenda','href="#/agenda"')}${act('spark','Assistant','href="#/assistant"')}${act('plus','Nouveau','href="#" data-act="newrdv"')}</div></section>`;
+ <div class="acts">${act('phone','Rappeler',ar.length?`href="#/appel/${ar[0].id}"`:'href="#/appels"',true)}${act('cal','Agenda','href="#/agenda"')}${act('doc','Devis','href="#/devis"')}${act('spark','Assistant','href="#/assistant"')}${act('plus','Nouveau','href="#" data-act="newrdv"')}</div></section>`;
  const stats=`<section class="stats">
  <a class="card stat" href="#/agenda"><span class="t13 mut">RDV à venir</span><b class="v"><span class="ak-count-n" data-count-n="${up.length}" data-anim-key="stat-rdv">${up.length}</span></b><span class="t13 mut ell">${nx?cap(dayWord(nx.rdv_date))+' · '+hmTxt(nx.rdv_date):'Aucun RDV prévu'}</span></a>
  <div class="card stat"><span class="t13 mut">Minutes ce mois-ci</span><b class="v"><span class="ak-count-n" data-count-n="${mins}" data-anim-key="stat-mins">${mins}</span><small> / 250</small></b><span class="bar"><b class="ak-bar-fill" data-n="${Math.min(100,mins/250*100)}" data-anim-key="stat-mins-bar" style="width:${Math.min(100,mins/250*100)}%"></b></span></div>
@@ -180,7 +187,7 @@ function detailBody(c,desk){if(!c)return '<div class="card empty">Appel introuva
  const kv=rows=>rows.filter(r=>r[1]).map(([k,v])=>`<div class="kv"><span>${k}</span><span>${v}</span></div>`).join('');
  const stl={a_rappeler:'<span class="dot"></span>À rappeler',rappele:'Rappelé',rdv_pris:'RDV pris',traite:'Sans suite'}[c.statut]||'';
  return `<div class="card dcard"><div class="dh">${av(c,'xl')}<h2 class="dn">${esc(nomOf(c))}</h2><div class="t15 mut">${esc(c.telephone_client)} · ${cap(dayWord(c.created_at))}, ${hmTxt(c.created_at)}</div><span class="pill">${stl}</span></div>
- <div class="acts">${act('phone','Rappeler',`href="${telHref(c.telephone_client)}" data-stop`,true)}${act('msg','SMS',`href="sms:${esc(String(c.telephone_client).replace(/\s/g,''))}" data-stop`)}${rv?act('cal','RDV',`href="#/rdv/${rv.id}"`):act('cal','Planifier',`href="#" data-act="newrdv" data-call="${c.id}"`)}${act('pin','Itinéraire',`href="${maps(adr)}" target="_blank" rel="noopener" data-stop`)}</div>
+ <div class="acts">${act('phone','Rappeler',`href="${telHref(c.telephone_client)}" data-stop`,true)}${act('msg','SMS',`href="sms:${esc(String(c.telephone_client).replace(/\s/g,''))}" data-stop`)}${rv?act('cal','RDV',`href="#/rdv/${rv.id}"`):act('cal','Planifier',`href="#" data-act="newrdv" data-call="${c.id}"`)}${act('doc','Faire un devis',`href="#" data-act="newdevis" data-call="${c.id}"`)}${act('pin','Itinéraire',`href="${maps(adr)}" target="_blank" rel="noopener" data-stop`)}</div>
  <div class="sub-c"><div class="t13 mut">Résumé par Akno</div><p class="t15">${esc(c.resume)||'—'}</p></div>${recBlock(c)}
  <div class="kvs">${kv([['Projet',esc(c.motif)],['Besoin',esc(c.besoin_detail)],['Urgence',c.urgence=='urgent'?'Urgent':'Normale'],['Durée',c.duration?durTxt(c.duration):''],['E-mail',c.email_client?`<a href="mailto:${esc(c.email_client)}" data-stop>${esc(c.email_client)}</a>`:''],['Adresse',adr?`<a href="${maps(adr)}" target="_blank" rel="noopener" data-stop>${esc(adr)}</a>`:''],['Rendez-vous',rv?`<a href="#/rdv/${rv.id}">${cap(dayWord(rv.rdv_date))} à ${hmTxt(rv.rdv_date)}</a>`:'']])}</div>
  <div class="grp-t in">Statut</div><div class="stseg">${Object.entries(ST).map(([k,l])=>`<button data-st="${k}" data-id="${c.id}" aria-pressed="${c.statut==k}" class="${c.statut==k?'on':''}">${l}</button>`).join('')}</div>
@@ -251,7 +258,7 @@ function rdvSheet(r,callId){const c=callId?byId(callId):null;const s=r?new Date(
  <div class="grp"><div class="fld"><input class="l" name="adr" placeholder="Adresse" value="${v('adresse')}" aria-label="Adresse"></div><div class="fld"><span>Rappel SMS la veille</span><button type="button" class="tg${FORM.rappel?' on':''}" id="tgr" role="switch" aria-checked="${FORM.rappel}" aria-label="Rappel SMS la veille"></button></div><div class="fld"><textarea name="note" placeholder="Notes" aria-label="Notes">${esc(r?r.note:'')}</textarea></div></div>
  <div class="err" id="ferr"></div></div></form>`;
  sheetLock();setTimeout(()=>{const i=$('#rf [name=nom]');if(i&&!i.value&&!isD())i.focus();initMobSheets()},300)}
-function closeLayer(){const L=$('#layer');if(!L||!L.innerHTML){FORM=null;return}const done=()=>{L.innerHTML='';L.classList.remove('layer-closing');FORM=null;sheetUnlock();initMobSheets()};const sh=L.querySelector('.sheet,.dlg');if(sh&&motionOk()){if(isMob()&&sh.classList.contains('sheet'))sh.classList.add('ak-out');L.classList.add('layer-closing');setTimeout(done,isMob()?350:250);return}done()}
+function closeLayer(){const L=$('#layer');if(!L||!L.innerHTML){FORM=null;DFORM=null;return}const done=()=>{L.innerHTML='';L.classList.remove('layer-closing');FORM=null;DFORM=null;sheetUnlock();initMobSheets()};const sh=L.querySelector('.sheet,.dlg');if(sh&&motionOk()){if(isMob()&&sh.classList.contains('sheet'))sh.classList.add('ak-out');L.classList.add('layer-closing');setTimeout(done,isMob()?350:250);return}done()}
 function submitRdv(f){const g=n=>f.elements[n].value.trim();if(!g('nom')){$('#ferr').textContent='Indiquez le nom du client';return}
  const s=new Date(g('date')+'T'+g('deb')),e=new Date(g('date')+'T'+g('fin'));if(isNaN(s)||isNaN(e)||e<=s){$('#ferr').textContent='Vérifiez la date et les heures';return}
  const o={nom_client:g('nom'),telephone_client:g('tel'),type:FORM.type,motif:FORM.call_id&&byId(FORM.call_id)?byId(FORM.call_id).motif:FORM.type,rdv_date:s.toISOString(),duree:Math.round((e-s)/6e4),adresse:g('adr'),note:g('note'),rappel:FORM.rappel,call_id:FORM.call_id};
@@ -330,8 +337,71 @@ function vReglages(){const tg=(k,l)=>`<div class="kv"><span class="w">${l}</span
  <div class="set-sec">Aide</div><div class="card set-card set-help"><a class="set-help-row" href="mailto:aknoweb.contact@gmail.com"><span>Contacter le support</span>${I('chev',18)}</a><a class="set-help-row" href="#"><span>Guide de démarrage</span>${I('chev',18)}</a></div></div>`;
  return head('Réglages')+`<div class="set-page">${left}${right}</div>`}
 
+/* ---------- Devis ---------- */
+const UI_DEVIS_F='devisF';
+if(UI[UI_DEVIS_F]==null)UI[UI_DEVIS_F]='tous';
+const devisById=id=>(DB.devis||[]).find(d=>String(d.id)===String(id));
+const devisSorted=()=>[...(DB.devis||[])].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+const devisLignesHt=lignes=>(lignes||[]).reduce((s,l)=>s+(Number(l.quantite)||0)*(Number(l.prix_unitaire_ht)||0),0);
+const devisTotals=d=>{const ht=devisLignesHt(d.lignes),tva=ht*(Number(d.tva_taux||0)/100),ttc=Math.round((ht+tva)*100)/100;return {ht,tva,ttc}};
+const fmtEur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);
+const devisStatutLbl=d=>{if(d.statut==='brouillon')return 'Brouillon';if(d.statut==='envoye')return 'Envoyé';if(d.statut==='relance')return 'Relancé ('+(d.relance_count||0)+' fois)';if(d.statut==='accepte')return 'Accepté';if(d.statut==='refuse')return 'Refusé';return d.statut||''};
+const devisStatutCls=d=>({brouillon:'mut',envoye:'',relance:'warn',accepte:'ok',refuse:'bad'}[d.statut]||'');
+const devisFiltered=()=>{const f=UI[UI_DEVIS_F];return devisSorted().filter(d=>f==='tous'||(f==='attente'?['brouillon','envoye','relance'].includes(d.statut):f==='acceptes'?d.statut==='accepte':f==='refuses'?d.statut==='refuse':true))};
+const devisPubUrl=d=>{const base=(typeof location!=='undefined'?location.origin:'')||'';return base+'/devis/'+(d.token||d.id)};
+function devisLi(d){const {ttc}=devisTotals(d);return `<a class="li devis-li" href="#/devis/${d.id}"><span class="ini sm devis-ico">${I('doc',18)}</span><div class="t"><div class="n"><span class="ell">${esc(d.numero)}</span><span class="tag devis-tag ${devisStatutCls(d)}">${esc(devisStatutLbl(d))}</span></div><div class="s">${esc(d.client_nom||'Client')} · ${fmtEur(ttc)}</div></div>${I('chev',18)}</a>`}
+function vDevis(){const list=devisFiltered();const seg=`<div class="seg devis-seg" role="tablist">${[['tous','Tous'],['attente','En attente'],['acceptes','Acceptés'],['refuses','Refusés']].map(([k,l])=>`<button role="tab" data-df="${k}" class="${UI[UI_DEVIS_F]==k?'on':''}" aria-selected="${UI[UI_DEVIS_F]==k}">${l}</button>`).join('')}</div>`;
+ const body=list.length?`<div class="card lst devis-lst">${list.map(devisLi).join('')}</div>`:'<div class="card empty">Aucun devis pour l\'instant</div>';
+ return head('Devis','',`<button class="ib wt" type="button" data-act="newdevis" aria-label="Nouveau devis">${I('plus',20)}</button>`)+`<div class="narrow devis-page">${seg}<button class="btnw devis-new-m" type="button" data-act="newdevis">Nouveau devis</button>${body}</div>`}
+function vDevisDetail(id){const d=devisById(id);if(!d)return `<a class="back" href="#/devis">${I('back',20)}Devis</a><div class="card empty">Devis introuvable</div>`;
+ const {ht,tva,ttc}=devisTotals(d);const lignes=(d.lignes||[]).map(l=>{const q=Number(l.quantite)||0,pu=Number(l.prix_unitaire_ht)||0;return `<tr><td>${esc(l.designation||'—')}</td><td class="num">${q}</td><td class="num">${fmtEur(pu)}</td><td class="num">${fmtEur(q*pu)}</td></tr>`}).join('');
+ const acts=[];if(d.statut==='brouillon')acts.push(`<button type="button" class="btnw sm" data-act="editdevis" data-id="${d.id}">Modifier</button>`);
+ if(d.statut==='brouillon'||d.statut==='envoye'||d.statut==='relance')acts.push(`<button type="button" class="btnw sm" data-act="senddevis" data-id="${d.id}">Envoyer</button>`);
+ if(d.token&&d.statut!=='brouillon')acts.push(`<a class="btnw sm ghost" href="${esc(devisPubUrl(d))}" target="_blank" rel="noopener" data-stop>Voir le PDF</a>`);
+ if(d.statut==='brouillon')acts.push(`<button type="button" class="del" data-act="deldevis" data-id="${d.id}">Supprimer</button>`);
+ const dates=[['Créé le',d.created_at],['Envoyé le',d.envoye_le],['Dernière relance',d.relance_le],['Réponse le',d.repondu_le]].filter(x=>x[1]).map(([k,v])=>`<div class="kv"><span>${k}</span><span>${esc(dateLong(v))}</span></div>`).join('');
+ return `<a class="back" href="#/devis">${I('back',20)}Devis</a><div class="narrow devis-detail"><div class="card dcard"><div class="dh l"><div class="t13 mut fw5">${esc(d.numero)}</div><h1 class="h1">${esc(d.objet||'Devis')}</h1><span class="tag devis-tag ${devisStatutCls(d)}">${esc(devisStatutLbl(d))}</span></div>
+ <div class="kvs">${dates}</div><div class="grp-t in">Client</div><div class="kvs"><div class="kv"><span>Nom</span><span>${esc(d.client_nom)}</span></div>${d.client_email?`<div class="kv"><span>E-mail</span><span>${esc(d.client_email)}</span></div>`:''}${d.client_telephone?`<div class="kv"><span>Téléphone</span><span>${esc(d.client_telephone)}</span></div>`:''}${d.client_adresse?`<div class="kv"><span>Adresse</span><span>${esc(d.client_adresse)}</span></div>`:''}</div>
+ <div class="grp-t in">Lignes</div><div class="devis-tbl-wrap"><table class="devis-tbl"><thead><tr><th>Désignation</th><th class="num">Qté</th><th class="num">P.U. HT</th><th class="num">Total</th></tr></thead><tbody>${lignes||'<tr><td colspan="4" class="mut">Aucune ligne</td></tr>'}</tbody></table></div>
+ <div class="devis-totals"><div class="kv"><span>Total HT</span><span>${fmtEur(ht)}</span></div><div class="kv"><span>TVA (${d.tva_taux} %)</span><span>${fmtEur(tva)}</span></div><div class="kv devis-ttc"><span>Total TTC</span><span>${fmtEur(ttc)}</span></div></div>
+ <div class="devis-detail-acts">${acts.join('')}</div></div></div>`}
+let DFORM=null;
+function demoDevisNumero(){const y=new Date().getFullYear();const n=(DB.devis||[]).filter(x=>String(x.numero||'').startsWith('D-'+y+'-')).length+1;return 'D-'+y+'-'+String(n).padStart(4,'0')}
+async function nextDevisNumero(){if(CLOUD&&sb&&USER){const{data,error}=await sb.rpc('devis_next_numero',{p_artisan_id:USER.id});if(!error&&data)return data}return demoDevisNumero()}
+function devisFromCall(c){if(!c)return null;const adr=[c.adresse,c.code_postal,c.ville].filter(Boolean).join(', ');return {client_nom:c.nom_client||'',client_email:c.email_client||'',client_telephone:c.telephone_client||'',client_adresse:adr,call_id:c.id,objet:c.motif?('Devis — '+c.motif):''}}
+function devisLineRow(l,i){return `<div class="devis-line" data-idx="${i}"><input class="devis-des" placeholder="Désignation" value="${esc(l.designation||'')}" aria-label="Désignation"><input class="devis-qty" type="number" min="0" step="1" inputmode="decimal" value="${esc(l.quantite??1)}" aria-label="Quantité"><input class="devis-pu" type="number" min="0" step="0.01" inputmode="decimal" value="${esc(l.prix_unitaire_ht??'')}" aria-label="Prix unitaire HT"><button type="button" class="ib devis-rm" data-act="devisrmline" data-idx="${i}" aria-label="Supprimer">${I('trash',18)}</button></div>`}
+function devisTotalsHtml(f){const ht=devisLignesHt(f.lignes),tva=ht*(Number(f.tva_taux||0)/100),ttc=Math.round((ht+tva)*100)/100;return `<div class="devis-totals sheet-totals"><div class="kv"><span>Total HT</span><span id="devis_ht">${fmtEur(ht)}</span></div><div class="kv"><span>TVA</span><span id="devis_tva">${fmtEur(tva)}</span></div><div class="kv devis-ttc"><span>Total TTC</span><span id="devis_ttc">${fmtEur(ttc)}</span></div></div>`}
+function devisSheet(existing,prefill){DFORM=existing?JSON.parse(JSON.stringify(existing)):{client_nom:'',client_email:'',client_telephone:'',client_adresse:'',objet:'',lignes:[{designation:'',quantite:1,prix_unitaire_ht:''}],tva_taux:20,call_id:prefill?.call_id||null,statut:'brouillon',relance_count:0};
+ if(prefill&&!existing)Object.assign(DFORM,prefill);if(!DFORM.lignes?.length)DFORM.lignes=[{designation:'',quantite:1,prix_unitaire_ht:''}];
+ const tvaBtns=[5.5,10,20].map(t=>`<button type="button" class="${Number(DFORM.tva_taux)===t?'on':''}" data-tva="${t}">${t} %</button>`).join('');
+ const lines=DFORM.lignes.map(devisLineRow).join('');
+ $('#layer').innerHTML=`<div class="ov" data-act="close"></div><form class="sheet devis-sheet" id="devisf" role="dialog" aria-label="Devis"><div class="grab"></div><div class="sh"><button type="button" data-act="close">Annuler</button><b>${existing?'Modifier le devis':'Nouveau devis'}</b><span class="t13 mut devis-num-lbl">${existing?esc(existing.numero):'Numéro à la création'}</span></div><div class="sheet-body">
+ <div class="grp"><label class="fld"><span>Nom</span><input name="client_nom" required value="${esc(DFORM.client_nom)}"></label><label class="fld"><span>E-mail</span><input name="client_email" type="email" value="${esc(DFORM.client_email||'')}"></label><label class="fld"><span>Téléphone</span><input name="client_telephone" value="${esc(DFORM.client_telephone||'')}"></label><label class="fld fld-col"><span>Adresse</span><textarea name="client_adresse" class="l">${esc(DFORM.client_adresse||'')}</textarea></label></div>
+ <div class="lab2">Objet</div><div class="grp"><label class="fld fld-col"><span class="sr-only">Objet</span><textarea name="objet" class="l" required placeholder="Objet du devis">${esc(DFORM.objet||'')}</textarea></label></div>
+ <div class="lab2">Lignes</div><div class="devis-lines">${lines}</div><button type="button" class="devis-add" data-act="devisaddline">${I('plus',16)} Ajouter une ligne</button>
+ <div class="lab2">TVA</div><div class="chips devis-tva" id="devis_tva_chips">${tvaBtns}</div>
+ ${devisTotalsHtml(DFORM)}
+ <div class="devis-sheet-btns"><button type="submit" class="btnw" data-mode="draft">Enregistrer en brouillon</button><button type="button" class="btnw w" data-act="devissenddraft">Envoyer au client</button></div>
+ </div></form>`;sheetLock();const sh=$('#layer .sheet');if(sh)initMobSheetSwipe(sh,()=>closeLayer())}
+function readDevisForm(){const f=$('#devisf');if(!f||!DFORM)return null;const fd=new FormData(f);DFORM.client_nom=String(fd.get('client_nom')||'').trim();DFORM.client_email=String(fd.get('client_email')||'').trim()||null;DFORM.client_telephone=String(fd.get('client_telephone')||'').trim()||null;DFORM.client_adresse=String(fd.get('client_adresse')||'').trim()||null;DFORM.objet=String(fd.get('objet')||'').trim();
+ const lines=[...f.querySelectorAll('.devis-line')].map(row=>({designation:row.querySelector('.devis-des')?.value.trim()||'',quantite:Number(row.querySelector('.devis-qty')?.value)||0,prix_unitaire_ht:Number(row.querySelector('.devis-pu')?.value)||0})).filter(l=>l.designation||l.prix_unitaire_ht);DFORM.lignes=lines.length?lines:[{designation:'',quantite:1,prix_unitaire_ht:0}];return DFORM}
+function refreshDevisTotalsUi(){if(!DFORM)return;const el=$('#devis_ht');if(!el)return;const {ht,tva,ttc}=devisTotals(DFORM);$('#devis_ht').textContent=fmtEur(ht);$('#devis_tva').textContent=fmtEur(tva);$('#devis_ttc').textContent=fmtEur(ttc)}
+async function persistDevis(sendAfter){const d=readDevisForm();if(!d||!d.client_nom||!d.objet){toast('Complétez le client et l\'objet');return null}
+ const now=new Date().toISOString();let row;const isNew=!d.id;
+ if(isNew){d.id=CLOUD?crypto.randomUUID():'d'+Date.now();d.token=crypto.randomUUID();d.numero=await nextDevisNumero();d.created_at=now;d.statut='brouillon';d.relance_count=0;if(!DB.devis)DB.devis=[];DB.devis.push(d);row=d}else{row=devisById(d.id);Object.assign(row,d);row.updated_at=now}
+ if(CLOUD&&sb&&USER){const err=await upsertDevisCloud(row,isNew);if(err){toast('Erreur d\'enregistrement');return null}SNAP=snap()}else save();
+ if(sendAfter){await sendDevisApi(row.id);return row}
+ toast(isNew?'Devis enregistré':'Devis mis à jour');closeLayer();location.hash='#/devis/'+row.id;route();return row}
+async function sendDevisApi(id){let d=devisById(id);if(d&&d.statut==='brouillon'&&!$('#devisf')){await persistDevis(false);d=devisById(id)}
+ if(!CLOUD){toast('Envoi simulé (mode démo)');if(d){d.statut='envoye';d.envoye_le=new Date().toISOString();save()}closeLayer();route(true);return}
+ if(!isUuid(id)){toast('Enregistrez le devis avant envoi');return}
+ const res=await fetch('/api/devis/envoyer',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({devis_id:id})});const j=await res.json().catch(()=>({}));
+ if(!res.ok){toast(j.error||'Envoi impossible');return}
+ toast('Devis envoyé au client');await cloudLoadDevisOnly();closeLayer();location.hash='#/devis/'+id;route()}
+function confirmDelDevis(id){const d=devisById(id);$('#layer').innerHTML=`<div class="ov" data-act="close"></div><div class="dlg" role="alertdialog"><b style="font-weight:500;font-size:16px">Supprimer ce devis ?</b><p>${esc(d.numero)} · ${esc(d.client_nom)}. Cette action est définitive.</p><div class="bb"><button data-act="close">Annuler</button><button class="rd" data-act="dodeldevis" data-id="${id}">Supprimer</button></div></div>`;sheetLock()}
+
 /* ============================ ROUTEUR ============================ */
-let last='',lastTab=-1,_routeKeep=false,_sameTab=false;
+let last='',lastTab=-1,_lastSideTab=0,_routeKeep=false,_sameTab=false;
 let _scrollLockN=0,_scrollLockY=0,_mobSheetY=0;
 function lockScroll(){if(_scrollLockN++>0)return;_scrollLockY=scrollY;const b=document.body,el=document.documentElement;b.style.position='fixed';b.style.top=`-${_scrollLockY}px`;b.style.left='0';b.style.right='0';b.style.width='100%';b.style.overflow='hidden';el.style.overflow='hidden'}
 function unlockScroll(){if(_scrollLockN<=0)return;if(--_scrollLockN>0)return;const b=document.body,el=document.documentElement,y=_scrollLockY;b.style.position='';b.style.top='';b.style.left='';b.style.right='';b.style.width='';b.style.overflow='';el.style.overflow='';scrollTo(0,y)}
@@ -340,16 +410,17 @@ function sheetUnlock(){if(isMob()){document.body.classList.remove('mob-sheet-ope
 function initMobSheetSwipe(el,onClose){if(!isMob()||!el||el.dataset.swipeInit)return;el.dataset.swipeInit='1';let y0=0,dy=0,drag=false;const end=()=>{if(!drag)return;drag=false;if(dy>100){el.style.transition='transform 350ms cubic-bezier(.32,.72,0,1)';el.style.transform='translateY(100%)';setTimeout(onClose,350)}else{el.style.transition='transform 350ms cubic-bezier(.32,.72,0,1)';el.style.transform='';setTimeout(()=>{el.style.transition='';el.style.transform='';dy=0},350)}};el.addEventListener('touchstart',e=>{if(el.scrollTop>0)return;if(e.target.closest('input,textarea,button,a,.rec-track,.rec-play,.stseg,.sh'))return;y0=e.touches[0].clientY;dy=0;drag=true;el.style.transition='none'},{passive:true});el.addEventListener('touchmove',e=>{if(!drag)return;dy=Math.max(0,e.touches[0].clientY-y0);el.style.transform=`translateY(${dy}px)`},{passive:true});el.addEventListener('touchend',end,{passive:true});el.addEventListener('touchcancel',end,{passive:true})}
 function initMobSheets(){if(!isMob())return;const ds=document.querySelector('.dsheet');if(ds&&!ds.dataset.swipeInit)initMobSheetSwipe(ds,()=>{ds.classList.add('ak-out');setTimeout(()=>{location.hash='#/appels'},350)});const sh=$('#layer .sheet');if(sh&&!sh.dataset.swipeInit)initMobSheetSwipe(sh,()=>closeLayer())}
 let _navLastY=0,_navCompact=false,_navScrollRaf=0;
-function onMobNavScroll(){if(!isMob()||document.body.classList.contains('mob-sheet-open')||UI.asOpen)return;if(_navScrollRaf)return;_navScrollRaf=requestAnimationFrame(()=>{_navScrollRaf=0;const y=window.scrollY;let compact=_navCompact;if(y<=8)compact=false;else if(y>_navLastY+8)compact=true;else if(y<_navLastY)compact=false;_navLastY=y;if(compact!==_navCompact){_navCompact=compact;document.body.classList.toggle('nav-compact',compact);layoutNavPills(lastTab<0?0:lastTab)}})}
+function onMobNavScroll(){if(!isMob()||document.body.classList.contains('mob-sheet-open')||UI.asOpen)return;if(_navScrollRaf)return;_navScrollRaf=requestAnimationFrame(()=>{_navScrollRaf=0;const y=window.scrollY;let compact=_navCompact;if(y<=8)compact=false;else if(y>_navLastY+8)compact=true;else if(y<_navLastY)compact=false;_navLastY=y;if(compact!==_navCompact){_navCompact=compact;document.body.classList.toggle('nav-compact',compact);layoutNavPills(lastTab<0?0:lastTab,_lastSideTab)}})}
 addEventListener('scroll',onMobNavScroll,{passive:true});
 function initScrimTouch(){document.addEventListener('touchmove',e=>{if(e.target.closest('.ov'))e.preventDefault()},{passive:false})}
 const motionOk=()=>!matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMob=()=>innerWidth<767;
-const tabFromHash=h=>h.startsWith('#/appel/')||h==='#/appels'?1:h==='#/agenda'||/^#\/rdv\//.test(h)?2:h==='#/assistant'?3:h==='#/reglages'?4:0;
-function layoutNavPills(tab,instant){const mob=isMob();const inst=instant??(!_pillPrimed||mob);const compact=mob&&document.body.classList.contains('nav-compact');const place=(root,pill,idx,axis)=>{if(!root||!pill)return;const links=[...root.querySelectorAll('a')];if(idx==null||idx<0||idx>=links.length){pill.style.opacity='0';return}pill.style.opacity='1';const link=links[idx];const x=link.offsetLeft,y=link.offsetTop,w=link.offsetWidth,h=link.offsetHeight;if(inst)pill.style.transition='none';pill.style.width=w+'px';pill.style.height=h+'px';pill.style.transform=axis==='x'?`translate3d(${x}px,0,0)`:`translate3d(0,${y}px,0)`;if(inst){pill.offsetHeight;requestAnimationFrame(()=>{pill.style.transition=''})}};
- place($('.snav'),$('.snav-pill'),tab<4?tab:null,'y');
+const mobTabFromHash=h=>/^#\/devis/.test(h)?-1:h.startsWith('#/appel/')||h==='#/appels'?1:h==='#/agenda'||/^#\/rdv\//.test(h)?2:h==='#/assistant'?3:h==='#/reglages'?4:0;
+const sideTabFromHash=h=>h.startsWith('#/appel/')||h==='#/appels'?1:h==='#/agenda'||/^#\/rdv\//.test(h)?2:/^#\/devis/.test(h)?3:h==='#/assistant'?4:h==='#/reglages'?null:0;
+function layoutNavPills(mobTab,sideTab,instant){const mob=isMob();const inst=instant??(!_pillPrimed||mob);const compact=mob&&document.body.classList.contains('nav-compact');const st=sideTab==null?mobTab:sideTab;const place=(root,pill,idx,axis)=>{if(!root||!pill)return;const links=[...root.querySelectorAll('a')];if(idx==null||idx<0||idx>=links.length){pill.style.opacity='0';return}pill.style.opacity='1';const link=links[idx];const x=link.offsetLeft,y=link.offsetTop,w=link.offsetWidth,h=link.offsetHeight;if(inst)pill.style.transition='none';pill.style.width=w+'px';pill.style.height=h+'px';pill.style.transform=axis==='x'?`translate3d(${x}px,0,0)`:`translate3d(0,${y}px,0)`;if(inst){pill.offsetHeight;requestAnimationFrame(()=>{pill.style.transition=''})}};
+ place($('.snav'),$('.snav-pill'),st!=null&&st>=0&&st<5?st:null,'y');
  const mpill=$('.nav-pill-m');
- if(mob&&mpill){if(tab==null||tab<0||tab>4){mpill.style.opacity='0'}else{mpill.style.opacity='1';if(inst)mpill.style.transition='none';if(compact){mpill.style.width='44px';mpill.style.height='44px';mpill.style.marginTop='-22px';mpill.style.transform=`translateX(calc(${tab} * (100% - 12px) / 5 + ((100% - 12px) / 5 - 44px) / 2))`}else{mpill.style.width='';mpill.style.height='';mpill.style.marginTop='';mpill.style.transform=`translateX(calc(${tab} * 100%))`}if(inst){mpill.offsetHeight;requestAnimationFrame(()=>{mpill.style.transition='transform 250ms cubic-bezier(.32,.72,0,1), height 250ms cubic-bezier(.32,.72,0,1), width 250ms cubic-bezier(.32,.72,0,1)'})}}}else place($('.nav'),mpill,tab,'x');
+ if(mob&&mpill){if(mobTab==null||mobTab<0||mobTab>4){mpill.style.opacity='0'}else{mpill.style.opacity='1';if(inst)mpill.style.transition='none';if(compact){mpill.style.width='44px';mpill.style.height='44px';mpill.style.marginTop='-22px';mpill.style.transform=`translateX(calc(${mobTab} * (100% - 12px) / 5 + ((100% - 12px) / 5 - 44px) / 2))`}else{mpill.style.width='';mpill.style.height='';mpill.style.marginTop='';mpill.style.transform=`translateX(calc(${mobTab} * 100%))`}if(inst){mpill.offsetHeight;requestAnimationFrame(()=>{mpill.style.transition='transform 250ms cubic-bezier(.32,.72,0,1), height 250ms cubic-bezier(.32,.72,0,1), width 250ms cubic-bezier(.32,.72,0,1)'})}}}else place($('.nav'),mpill,mobTab,'x');
  if(inst)_pillPrimed=true}
 let _countRaf=0;const _countAnimated=new Map();
 function settleCounts(){document.querySelectorAll('.hero-n,.ak-count-n').forEach(el=>{const t=+(el.dataset.n??el.dataset.countN)||0;el.textContent=String(t)});document.querySelectorAll('.ak-bar-fill').forEach(el=>{el.style.width=(+el.dataset.n||0)+'%'})}
@@ -359,7 +430,7 @@ function dashCountAnim(){if(_countRaf){cancelAnimationFrame(_countRaf);_countRaf
  if(!items.length)return;const t0=performance.now(),dur=600,ease=t=>1-Math.pow(1-t,3);items.forEach(it=>{if(it.kind==='text')it.el.textContent='0';else it.el.style.width='0%'});
  const frame=now=>{const p=Math.min(1,(now-t0)/dur),e=ease(p);items.forEach(it=>{if(it.kind==='text')it.el.textContent=String(Math.round(e*it.target));else it.el.style.width=e*it.target+'%'});if(p<1)_countRaf=requestAnimationFrame(frame);else{_countRaf=0;settleCounts()}};_countRaf=requestAnimationFrame(frame)}
 function staggerPage(){if(!motionOk()||isMob())return;const sel='#page .hero,#page .acts,#page .stats .stat,#page .card';[...document.querySelectorAll(sel)].slice(0,6).forEach((el,i)=>{el.style.setProperty('--i',i);el.classList.add('ak-stagger')})}
-function afterRouteFx(tab){requestAnimationFrame(()=>layoutNavPills(tab));const page=$('#page');if(!page)return;if(_routeKeep){page.classList.add('noanim');page.classList.remove('ak-page-in');if(tab===0)settleCounts();if(tab===3)requestAnimationFrame(scrollAsChatEnd);initCallRec();if(tab===4&&CLOUD&&sb)refreshPushState();requestAnimationFrame(initMobSheets);return}page.classList.remove('noanim');if(isMob()&&motionOk()){page.classList.remove('ak-page-in');void page.offsetWidth;page.classList.add('ak-page-in')}else{page.classList.remove('ak-page-in');staggerPage()}if(tab===0){if(isMob())settleCounts();else dashCountAnim()}if(tab===3)requestAnimationFrame(scrollAsChatEnd);initCallRec();if(tab===4&&CLOUD&&sb)refreshPushState();requestAnimationFrame(initMobSheets)}
+function afterRouteFx(mobTab,sideTab){requestAnimationFrame(()=>layoutNavPills(mobTab,sideTab));const page=$('#page');if(!page)return;if(_routeKeep){page.classList.add('noanim');page.classList.remove('ak-page-in');if(mobTab===0)settleCounts();if(mobTab===3)requestAnimationFrame(scrollAsChatEnd);initCallRec();if(mobTab===4&&CLOUD&&sb)refreshPushState();requestAnimationFrame(initMobSheets);return}page.classList.remove('noanim');if(isMob()&&motionOk()){page.classList.remove('ak-page-in');void page.offsetWidth;page.classList.add('ak-page-in')}else{page.classList.remove('ak-page-in');staggerPage()}if(mobTab===0){if(isMob())settleCounts();else dashCountAnim()}if(mobTab===3)requestAnimationFrame(scrollAsChatEnd);initCallRec();if(mobTab===4&&CLOUD&&sb)refreshPushState();requestAnimationFrame(initMobSheets)}
 document.addEventListener('visibilitychange',()=>{if(_countRaf){cancelAnimationFrame(_countRaf);_countRaf=0}settleCounts()});
 let _callRecAudio=null;
 function pauseCallRec(){document.querySelectorAll('.rec-player audio').forEach(a=>{a.pause();a.currentTime=a.currentTime});if(_callRecAudio){_callRecAudio.pause();_callRecAudio=null}}
@@ -374,23 +445,24 @@ function initCallRec(){const wrap=document.querySelector('[data-rec]');if(!wrap|
  const pos=e=>{const r=track.getBoundingClientRect();return r.width?(e.clientX-r.left)/r.width:0};
  track.addEventListener('click',e=>seek(pos(e)));track.addEventListener('pointerdown',e=>{drag=true;track.setPointerCapture(e.pointerId);seek(pos(e))});track.addEventListener('pointermove',e=>{if(drag)seek(pos(e))});track.addEventListener('pointerup',()=>{drag=false});track.addEventListener('pointercancel',()=>{drag=false});
  if(audio.error)fail()}
-function routeRender(keep,h,y){pauseCallRec();ensureChrome();const{tab,body,extra}=viewForHash(h);if(!_navLed){syncNavTab(tab);layoutNavPills(tab)}else _navLed=false;
+function routeRender(keep,h,y){pauseCallRec();ensureChrome();const{tab,sideTab,body,extra}=viewForHash(h);if(!_navLed){syncNavTab(tab,sideTab);layoutNavPills(tab,sideTab)}else _navLed=false;
  const openDsheet=!isD()&&h.startsWith('#/appel/'),wasDsheet=!isD()&&last.startsWith('#/appel/');
  if(openDsheet&&!wasDsheet)sheetLock();
  $('#page').innerHTML=`<div class="wrap">${body}</div>`+extra;
  if(wasDsheet&&!openDsheet)sheetUnlock();
  if(!openDsheet&&_scrollLockN===0){if(keep||(h.startsWith('#/appel')&&last.startsWith('#/appel'))||(h.startsWith('#/appel/')&&last=='#/appels'))scrollTo(0,y);else scrollTo(0,0)}
- last=h;lastTab=tab;_routeKeep=!!keep;afterRouteFx(tab)}
-function route(keep){const h=location.hash||'#/';const y=scrollY;const tab=tabFromHash(h);_sameTab=!keep&&tab===lastTab&&!!last;_routeKeep=!!keep||_sameTab;
+ last=h;lastTab=tab;_lastSideTab=sideTab;_routeKeep=!!keep;afterRouteFx(tab,sideTab)}
+function route(keep){const h=location.hash||'#/';const y=scrollY;const tab=mobTabFromHash(h);_sameTab=!keep&&tab===lastTab&&!!last;_routeKeep=!!keep||_sameTab;
  const run=()=>routeRender(keep,h,y);
  const vt=!_routeKeep&&!isMob()&&motionOk()&&document.startViewTransition&&!document.body.classList.contains('is-login')&&!h.startsWith('#/appel/');
  if(vt)document.startViewTransition(run);else run()}
 addEventListener('hashchange',()=>{if(UI.asOpen){UI.asOpen=false;unlockScroll()}closeLayer();route()});
 document.addEventListener('click',e=>{const t=e.target;let x;
- if(x=t.closest('.snav a[href^="#"], .nav a[href^="#"], .side-foot a[href^="#"]')){if(t.closest('[data-stop]'))return;const h=x.getAttribute('href'),tab=tabFromHash(h),cur=location.hash||'#/';if((h===cur||(h==='#/'&&(cur==='#/'||cur==='')))&&tab===lastTab){e.preventDefault();return}e.preventDefault();if(!x.closest('.nav'))navLead(tab);location.hash=h;return}
+ if(x=t.closest('.snav a[href^="#"], .nav a[href^="#"], .side-foot a[href^="#"]')){if(t.closest('[data-stop]'))return;const h=x.getAttribute('href'),tab=mobTabFromHash(h),st=sideTabFromHash(h),cur=location.hash||'#/';if((h===cur||(h==='#/'&&(cur==='#/'||cur==='')))&&tab===lastTab){e.preventDefault();return}e.preventDefault();if(!x.closest('.nav'))navLead(tab,st);location.hash=h;return}
  if(t.closest('[data-stop]'))return;
  if(isMob()&&(x=t.closest('.ov[data-go]'))){e.preventDefault();const ds=document.querySelector('.dsheet');if(ds){ds.classList.add('ak-out');setTimeout(()=>{location.hash=x.dataset.go},350);return}}
  if(x=t.closest('[data-f]')){e.preventDefault();UI.f=x.dataset.f;if(location.hash!='#/appels'&&!location.hash.startsWith('#/appel/'))location.hash='#/appels';else route(true);return}
+ if(x=t.closest('[data-df]')){e.preventDefault();UI[UI_DEVIS_F]=x.dataset.df;route(true);return}
  if(x=t.closest('[data-st]')){const c=byId(x.dataset.id);if(c.statut!=x.dataset.st){c.statut=x.dataset.st;save();toast('Statut : '+ST[c.statut])}route(true);return}
  if(x=t.closest('[data-type]')){FORM.type=x.dataset.type;document.querySelectorAll('#tchips button').forEach(b=>b.classList.toggle('on',b==x));return}
  if(x=t.closest('#tgr')){FORM.rappel=!FORM.rappel;x.classList.toggle('on',FORM.rappel);x.setAttribute('aria-checked',FORM.rappel);return}
@@ -414,12 +486,21 @@ document.addEventListener('click',e=>{const t=e.target;let x;
   else if(a=='pushon')activatePush();
   else if(a=='mic')toast('Dictée : utilisez le micro de votre clavier');
   else if(a=='resetdemo'){DB=demo();save();UI.f='tous';UI.day=sod(new Date());toast('Démo réinitialisée');route()}
+  else if(a=='newdevis')devisSheet(null,x.dataset.call?devisFromCall(byId(x.dataset.call)):null);
+  else if(a=='editdevis')devisSheet(devisById(x.dataset.id));
+  else if(a=='senddevis')sendDevisApi(x.dataset.id).then(()=>route(true));
+  else if(a=='deldevis')confirmDelDevis(x.dataset.id);
+  else if(a=='dodeldevis'){const id=x.dataset.id;if(CLOUD&&sb&&USER)sb.from('devis').delete().eq('id',id);DB.devis=(DB.devis||[]).filter(d=>String(d.id)!==String(id));save();SNAP=snap();closeLayer();toast('Devis supprimé');location.hash='#/devis';route()}
+  else if(a=='devisaddline'){if(!DFORM)return;DFORM.lignes.push({designation:'',quantite:1,prix_unitaire_ht:''});devisSheet(DFORM);readDevisForm()}
+  else if(a=='devisrmline'){if(!DFORM)return;DFORM.lignes.splice(+x.dataset.idx,1);if(!DFORM.lignes.length)DFORM.lignes=[{designation:'',quantite:1,prix_unitaire_ht:''}];devisSheet(DFORM);readDevisForm()}
+  else if(a=='devissenddraft')persistDevis(true);
   else if(a=='logout')sb.auth.signOut().then(()=>location.reload())}});
 document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.matches('[data-go]'))location.hash=e.target.dataset.go;if(e.key=='Escape'){if(UI.asOpen){UI.asOpen=false;unlockScroll();route(true)}else closeLayer()}});
-document.addEventListener('submit',e=>{e.preventDefault();if(e.target.id=='rf')submitRdv(e.target);else if(e.target.id=='askf'){const q=$('#askq').value;ask(q)}});
-let nt;document.addEventListener('input',e=>{if(e.target.id=='aq'){UI.aq=e.target.value;const p=e.target.selectionStart;route(true);const n=$('#aq');if(n){n.focus();n.setSelectionRange(p,p)}return}if(e.target.id=='note'){const c=byId(e.target.dataset.id);c.note=e.target.value;clearTimeout(nt);nt=setTimeout(()=>{save()},400)}});
+document.addEventListener('submit',e=>{e.preventDefault();if(e.target.id=='rf')submitRdv(e.target);else if(e.target.id=='devisf')persistDevis(false);else if(e.target.id=='askf'){const q=$('#askq').value;ask(q)}});
+let nt;document.addEventListener('input',e=>{if(e.target.id=='aq'){UI.aq=e.target.value;const p=e.target.selectionStart;route(true);const n=$('#aq');if(n){n.focus();n.setSelectionRange(p,p)}return}if(e.target.closest('.devis-sheet')){readDevisForm();refreshDevisTotalsUi();return}if(e.target.id=='note'){const c=byId(e.target.dataset.id);c.note=e.target.value;clearTimeout(nt);nt=setTimeout(()=>{save()},400)}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-tva]');if(!t||!t.closest('#devis_tva_chips'))return;e.preventDefault();if(!DFORM)return;DFORM.tva_taux=Number(t.dataset.tva);t.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===t));readDevisForm();refreshDevisTotalsUi()});
 document.addEventListener('change',e=>{if(e.target.id=='note'){save();toast('Note enregistrée')}});
-const bp=()=>innerWidth>=1024?2:innerWidth>=768?1:0;let _m=bp(),_rzT;addEventListener('resize',()=>{clearTimeout(_rzT);_rzT=setTimeout(()=>{layoutNavPills(lastTab<0?0:lastTab);const m=bp();if(m!==_m){_m=m;route(true)}},150)});
+const bp=()=>innerWidth>=1024?2:innerWidth>=768?1:0;let _m=bp(),_rzT;addEventListener('resize',()=>{clearTimeout(_rzT);_rzT=setTimeout(()=>{layoutNavPills(lastTab<0?0:lastTab,_lastSideTab);const m=bp();if(m!==_m){_m=m;route(true)}},150)});
 setInterval(()=>{const h=location.hash||'#/';if((h==='#/agenda'||h==='#/'||h==='#/appels')&&!$('#layer').innerHTML&&!UI.asOpen&&!document.activeElement.matches('input,textarea'))backgroundRefresh()},60000);
 
 /* ===================== Mode réel : Supabase ===================== */
@@ -429,7 +510,12 @@ const rowToCall=r=>({id:r.id,nom_client:r.nom_client||'',telephone_client:r.tele
 const TYPE_RE=/^\[(Visite devis|Panne|Entretien|Installation)\]\s*/;
 const rowToRdv=r=>{const m=(r.title||'').match(TYPE_RE);const rp=/\[rappel-sms\]/.test(r.notes||'');return{id:r.id,call_id:r.call_id,nom_client:r.client||'',telephone_client:r.telephone_client||'',type:m?m[1]:'Visite devis',motif:(r.title||'').replace(TYPE_RE,'')||'Rendez-vous',rdv_date:r.start,duree:Math.max(15,Math.round((new Date(r.end)-new Date(r.start))/6e4))||60,adresse:[r.adresse,r.ville].filter(Boolean).join(', '),note:(r.notes||'').replace(/\s*\[rappel-sms\]/,''),rappel:rp}};
 const rdvToRow=r=>({artisan_id:USER.id,call_id:r.call_id||null,title:'['+r.type+'] '+(r.motif||''),client:r.nom_client,telephone_client:r.telephone_client||null,start:r.rdv_date,end:new Date(new Date(r.rdv_date).getTime()+(r.duree||60)*6e4).toISOString(),adresse:r.adresse||null,notes:((r.note||'')+(r.rappel?' [rappel-sms]':'')).trim()||null});
-const snap=()=>JSON.parse(JSON.stringify({calls:DB.calls,rdvs:DB.rdvs}));
+const snap=()=>JSON.parse(JSON.stringify({calls:DB.calls,rdvs:DB.rdvs,devis:DB.devis||[]}));
+const rowToDevis=r=>({id:r.id,numero:r.numero,statut:r.statut,relance_count:r.relance_count||0,client_nom:r.client_nom||'',client_email:r.client_email||'',client_telephone:r.client_telephone||'',client_adresse:r.client_adresse||'',objet:r.objet||'',lignes:r.lignes||[],tva_taux:Number(r.tva_taux)||20,token:r.token,call_id:r.call_id,envoye_le:r.envoye_le,relance_le:r.relance_le,repondu_le:r.repondu_le,reponse:r.reponse,created_at:r.created_at,updated_at:r.updated_at});
+const devisToRow=d=>({numero:d.numero,statut:d.statut,relance_count:d.relance_count||0,client_nom:d.client_nom,client_email:d.client_email||null,client_telephone:d.client_telephone||null,client_adresse:d.client_adresse||null,objet:d.objet,lignes:d.lignes,tva_taux:d.tva_taux,token:d.token,call_id:d.call_id||null,envoye_le:d.envoye_le||null,relance_le:d.relance_le||null,repondu_le:d.repondu_le||null,reponse:d.reponse||null,updated_at:new Date().toISOString()});
+async function upsertDevisCloud(d,isNew){const row=devisToRow(d);if(isNew){const{error}=await sb.from('devis').insert({id:d.id,...row,created_at:d.created_at||new Date().toISOString()});return error}
+ const{error}=await sb.from('devis').update(row).eq('id',d.id);return error}
+async function cloudLoadDevisOnly(){if(!sb||!USER)return;const{data,error}=await sb.from('devis').select('*').order('created_at',{ascending:false});if(!error){DB.devis=(data||[]).map(rowToDevis);SNAP=snap()}}
 const isUuid=id=>/^[0-9a-f]{8}-/.test(String(id));
 async function cloudSync(){if(!SNAP)return;const old=SNAP;SNAP=snap();const err=e=>{if(e){console.warn(e);toast('Erreur de synchronisation')}};
  for(const c of DB.calls){const o=old.calls.find(x=>x.id==c.id);if(!o)continue;const p={};CALL_SYNC.forEach(k=>{if((c[k]??null)!==(o[k]??null))p[k=='note'?'notes':k]=c[k]??null});if(Object.keys(p).length){const{error}=await sb.from('calls').update(p).eq('id',c.id);err(error)}}
@@ -438,15 +524,15 @@ async function cloudSync(){if(!SNAP)return;const old=SNAP;SNAP=snap();const err=
   if(!o||!isUuid(r.id)){const{data,error}=await sb.from('appointments').insert(rdvToRow(r)).select('id').single();err(error);if(data){const tmp=r.id;r.id=data.id;const s2=SNAP.rdvs.find(x=>x.id==tmp);if(s2)s2.id=data.id;if(location.hash=='#/rdv/'+tmp)location.hash='#/rdv/'+data.id}}
   else if(JSON.stringify(o)!==JSON.stringify(r)){const{error}=await sb.from('appointments').update(rdvToRow(r)).eq('id',r.id);err(error)}}}
 let _callsSub=false;
-function applyCloudPayload(a,c,r){if(c.error||r.error){toast('Impossible de charger les données');console.warn(c.error||r.error)}
+function applyCloudPayload(a,c,r,dv){if(c.error||r.error||dv?.error){toast('Impossible de charger les données');console.warn(c.error||r.error||dv?.error)}
  const pf=a.data||{};const pr=pf.prenom||(USER.email||'').split('@')[0];
  Object.assign(PROFIL,{prenom:pr,nom:'',initiales:ini(pr+' '+(pf.nom_entreprise||'')),entreprise:pf.nom_entreprise||'',telephone:pf.telephone||'',email:pf.email||USER.email||''});
  let p={};try{p=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){}
- DB={calls:(c.data||[]).map(rowToCall),rdvs:(r.data||[]).map(rowToRdv),chat:p.chat||[],notif:p.notif||{nouveaux:true,urgents:true,resume:false}};SNAP=snap()}
-async function fetchCloudRows(){return Promise.all([sb.from('artisans').select('*').eq('id',USER.id).maybeSingle(),sb.from('calls').select('id,nom_client,telephone_client,motif,besoin_detail,code_postal,ville,adresse,email_client,rdv_date,urgence,duration,resume,statut,notes,created_at,recording_url').order('created_at',{ascending:false}).limit(500),sb.from('appointments').select('*').order('start')])}
-async function cloudLoad(){const[a,c,r]=await fetchCloudRows();applyCloudPayload(a,c,r);
+ DB={calls:(c.data||[]).map(rowToCall),rdvs:(r.data||[]).map(rowToRdv),devis:(dv?.data||[]).map(rowToDevis),chat:p.chat||[],notif:p.notif||{nouveaux:true,urgents:true,resume:false}};SNAP=snap()}
+async function fetchCloudRows(){return Promise.all([sb.from('artisans').select('*').eq('id',USER.id).maybeSingle(),sb.from('calls').select('id,nom_client,telephone_client,motif,besoin_detail,code_postal,ville,adresse,email_client,rdv_date,urgence,duration,resume,statut,notes,created_at,recording_url').order('created_at',{ascending:false}).limit(500),sb.from('appointments').select('*').order('start'),sb.from('devis').select('*').order('created_at',{ascending:false})])}
+async function cloudLoad(){const[a,c,r,d]=await fetchCloudRows();applyCloudPayload(a,c,r,d);
  if(!_callsSub){_callsSub=true;sb.channel('calls').on('postgres_changes',{event:'INSERT',schema:'public',table:'calls'},e=>{const x=rowToCall(e.new);if(DB.calls.some(y=>y.id==x.id))return;DB.calls.push(x);SNAP=snap();toast('Nouvel appel · '+nomOf(x));if(!$('#layer').innerHTML)route(true)}).subscribe()}}
-async function backgroundRefresh(){if(!CLOUD||!sb||!USER){load();return}if($('#layer').innerHTML||UI.asOpen)return;const h=location.hash||'#/';const tab=tabFromHash(h);const[a,c,r]=await fetchCloudRows();if((location.hash||'#')!==h)return;if(c.error||r.error){console.warn(c.error||r.error);return}applyCloudPayload(a,c,r);if(tabFromHash(location.hash||'#')===tab&&!$('#layer').innerHTML)route(true)}
+async function backgroundRefresh(){if(!CLOUD||!sb||!USER){load();return}if($('#layer').innerHTML||UI.asOpen)return;const h=location.hash||'#/';const tab=mobTabFromHash(h);const[a,c,r,d]=await fetchCloudRows();if((location.hash||'#')!==h)return;if(c.error||r.error||d.error){console.warn(c.error||r.error||d.error);return}applyCloudPayload(a,c,r,d);if(mobTabFromHash(location.hash||'#')===tab&&!$('#layer').innerHTML)route(true)}
 async function refreshCurrentPage(){await backgroundRefresh()}
 function loginView(msg=''){document.body.classList.add('is-login');_chrome=false;_pillPrimed=false;$('#app').innerHTML=`<div class="login"><div class="lbox"><div class="llogo"><i>${MARK(26,19)}</i>Akno</div><h1 class="h1">Connexion</h1><p class="t15 mut">Retrouvez les appels pris par votre assistante.</p>
  <form id="lgf"><label class="lf"><span>E-mail</span><input id="lg_em" type="email" required autocomplete="email" placeholder="vous@entreprise.fr"></label><label class="lf"><span>Mot de passe</span><input id="lg_pw" type="password" autocomplete="current-password" placeholder="Laisser vide pour recevoir un lien"></label>

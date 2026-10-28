@@ -545,6 +545,45 @@ button.kv{color:#fff}
 .ak-stagger{animation:akRise .3s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*25ms)}
 ::view-transition-old(page){animation:akFade .12s ease-out both reverse}
 ::view-transition-new(page){animation:akFade .2s ease-out both}
+/* ================= Devis ================= */
+.devis-page .devis-new-m{display:flex;margin:12px 0 16px}
+.devis-seg{margin-bottom:12px}
+.devis-li .devis-ico{background:rgba(255,255,255,.08);color:#fff;display:grid;place-items:center;flex:none}
+.devis-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.1);margin-left:8px;flex:none}
+.devis-tag.ok{background:rgba(79,209,165,.2);color:#4fd1a5}
+.devis-tag.bad{background:rgba(255,107,107,.15);color:#ff8a8a}
+.devis-tag.warn{background:rgba(255,193,94,.15);color:#ffc15e}
+.devis-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.devis-tbl th,.devis-tbl td{padding:10px 6px;border-bottom:1px solid var(--line);text-align:left}
+.devis-tbl th{font-weight:600;color:var(--mut);font-size:13px}
+.devis-tbl .num{text-align:right;white-space:nowrap}
+.devis-tbl-wrap{overflow-x:auto;margin:0 -4px}
+.devis-totals{margin-top:12px;padding-top:8px}
+.devis-totals .devis-ttc span:last-child{font-weight:700;font-size:17px}
+.devis-detail-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.devis-detail-acts .btnw{width:auto;flex:1;min-width:140px;height:44px;font-size:14px}
+.devis-detail-acts .btnw.ghost{background:rgba(255,255,255,.08);color:#fff}
+.devis-detail-acts .del{flex:1 1 100%;margin-top:8px}
+.devis-lines{display:flex;flex-direction:column;gap:8px}
+.devis-line{display:grid;grid-template-columns:1fr 56px 72px 40px;gap:8px;align-items:center}
+.devis-line input{height:44px;border-radius:12px;background:var(--card);border:0;padding:0 10px;font-size:14px;width:100%}
+.devis-add{display:inline-flex;align-items:center;gap:8px;margin:8px 0 16px;font-size:14px;font-weight:500;color:var(--mut)}
+.devis-sheet-btns{display:flex;flex-direction:column;gap:10px;margin-top:20px;padding-bottom:8px}
+.devis-sheet-btns .btnw.w{background:#fff;color:#070b17}
+.devis-sheet .sh .devis-num-lbl{margin-left:auto;font-size:12px}
+.fld-col{flex-direction:column;align-items:stretch!important}
+.fld-col span{margin-bottom:6px}
+.fld-col textarea{text-align:left!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media (min-width:768px){
+ .devis-page .devis-new-m{display:none}
+ .top .ib.wt[data-act=newdevis]{display:inline-flex}
+}
+@media (max-width:767px){
+ .hero .acts{flex-wrap:wrap;max-width:100%}
+ .hero .acts .act{flex:0 0 calc(20% - 6px);min-width:64px}
+ .devis-line{grid-template-columns:1fr 48px 64px 36px}
+}
 ::view-transition-old(root),::view-transition-new(root){animation:none}
 @media (prefers-reduced-motion:reduce){
  .ak-stagger,.nav-pill,.snav-pill,.nav-pill-m,#page.ak-page-in{animation:none!important}
