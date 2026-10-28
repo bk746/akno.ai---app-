@@ -233,12 +233,27 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;strok
  #app{display:block}
  #page{padding:calc(env(safe-area-inset-top) + 16px) 16px calc(var(--navh) + 24px + env(safe-area-inset-bottom));view-transition-name:none}
  #page:has(.as-page){padding-bottom:calc(var(--navh) + 56px + 72px + env(safe-area-inset-bottom))}
- .wrap{padding:0;max-width:none}
+ .wrap{padding:0;max-width:none;transition:transform 350ms cubic-bezier(.32,.72,0,1),border-radius 350ms cubic-bezier(.32,.72,0,1)}
+ body.mob-sheet-open #app #page>.wrap{transform:scale(.96);border-radius:12px;overflow:hidden}
+ body.mob-sheet-open .nav{transform:translateY(120%);opacity:0;pointer-events:none;transition:transform 200ms ease,opacity 200ms ease}
+ .ov,#layer .ov,#page>.ov{background:rgba(0,0,0,.5);animation:mobOvIn 350ms ease both}
+ .dsheet,#layer .sheet{top:calc(env(safe-area-inset-top) + 12px);bottom:0;left:0;right:0;border-radius:24px 24px 0 0;max-height:none;padding:10px 20px calc(env(safe-area-inset-bottom) + 24px);background:#0e1529;animation:mobSheetIn 350ms cubic-bezier(.32,.72,0,1) both}
+ .dsheet{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ #layer .sheet{overflow:hidden}
+ .dsheet.ak-out,#layer.layer-closing .sheet,#layer .sheet.ak-out{animation:mobSheetOut 350ms cubic-bezier(.32,.72,0,1) both}
+ #layer .sheet-body{max-height:none;flex:1}
  .card{padding:18px;width:100%;box-sizing:border-box}
  .set-card.card{padding:18px}
- .nav{display:grid;grid-template-columns:repeat(5,1fr);padding:4px 6px;align-items:center;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%)}
- .nav a{justify-self:stretch;width:100%;max-width:none;height:56px;min-height:56px;max-height:56px;margin:0;padding:0;gap:4px;border-radius:26px;flex-direction:column;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
- .nav-pill-m{width:calc((100% - 12px)/5);height:56px;left:6px;top:50%;margin-top:-28px;transition:transform .28s cubic-bezier(.32,.72,0,1)!important}
+ .nav{left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 8px);height:var(--navh);display:grid;grid-template-columns:repeat(5,1fr);padding:4px 6px;align-items:center;background:rgba(20,22,30,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);box-shadow:none;transition:height 250ms cubic-bezier(.32,.72,0,1),transform 250ms cubic-bezier(.32,.72,0,1),opacity 250ms cubic-bezier(.32,.72,0,1)}
+ .nav a{justify-self:stretch;width:100%;max-width:none;height:56px;min-height:56px;max-height:56px;margin:0;padding:0;gap:4px;border-radius:26px;flex-direction:column;align-items:center;justify-content:center;font-size:12px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:height 250ms cubic-bezier(.32,.72,0,1),gap 250ms cubic-bezier(.32,.72,0,1),color 250ms ease}
+ .nav a svg{width:24px;height:24px}
+ .nav a span{transition:opacity 250ms cubic-bezier(.32,.72,0,1),max-height 250ms cubic-bezier(.32,.72,0,1),margin 250ms cubic-bezier(.32,.72,0,1)}
+ .nav a.on{color:#fff}
+ .nav a.on span{font-weight:600}
+ .nav-pill-m{width:calc((100% - 12px)/5);height:56px;left:6px;top:50%;margin-top:-28px;border-radius:26px;transition:transform 250ms cubic-bezier(.32,.72,0,1),width 250ms cubic-bezier(.32,.72,0,1),height 250ms cubic-bezier(.32,.72,0,1)!important}
+ body.nav-compact{--navh:52px}
+ body.nav-compact .nav a{height:52px;min-height:52px;max-height:52px;gap:0}
+ body.nav-compact .nav a span{opacity:0;max-height:0;margin:0;overflow:hidden}
  .toast{top:auto;bottom:calc(16px + var(--navh) + 12px + env(safe-area-inset-bottom));transform:translate(-50%,calc(100% + 24px));transition:transform .25s cubic-bezier(.2,.8,.2,1),opacity .25s ease}
  .toast:not(.sh){opacity:0;visibility:hidden;pointer-events:none}
  .toast.sh{transform:translate(-50%,0);opacity:1;visibility:visible}
@@ -518,6 +533,9 @@ button.kv{color:#fff}
 }
 /* ================= Motion (Revolut-style) ================= */
 @keyframes akPageIn{from{opacity:0}to{opacity:1}}
+@keyframes mobSheetIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes mobSheetOut{from{transform:translateY(0)}to{transform:translateY(100%)}}
+@keyframes mobOvIn{from{opacity:0}to{opacity:1}}
 @keyframes akFade{from{opacity:0}}
 @keyframes akRise{from{opacity:0;transform:translateY(6px)}}
 @keyframes akSheetIn{from{opacity:0;transform:translateY(100%)}}
@@ -531,7 +549,8 @@ button.kv{color:#fff}
 @media (prefers-reduced-motion:reduce){
  .ak-stagger,.nav-pill,.snav-pill,.nav-pill-m,#page.ak-page-in{animation:none!important}
  .nav-pill,.snav-pill,.nav-pill-m{transition:none!important}
- .ov,.dsheet,.as-sheet,.sheet{animation:none!important}
+ .ov,.dsheet,.as-sheet,.sheet,#layer .sheet{animation:none!important}
+ body.mob-sheet-open #app #page>.wrap,body.mob-sheet-open .nav{transition:none!important}
  ::view-transition-old(page),::view-transition-new(page){animation:none!important}
  .toast{transition:none!important}
 }
