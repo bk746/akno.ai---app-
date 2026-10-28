@@ -93,7 +93,7 @@ const sorted=()=>[...DB.calls].sort((a,b)=>new Date(b.created_at)-new Date(a.cre
 const aRappeler=()=>DB.calls.filter(c=>c.statut=='a_rappeler').sort((a,b)=>(b.urgence=='urgent')-(a.urgence=='urgent')||new Date(b.created_at)-new Date(a.created_at));
 const upcoming=()=>DB.rdvs.filter(r=>new Date(r.rdv_date).getTime()+(r.duree||60)*6e4>Date.now()).sort((a,b)=>new Date(a.rdv_date)-new Date(b.rdv_date));
 const week=()=>DB.calls.filter(c=>dd(new Date(),c.created_at)<7);
-let tt;function toast(m){const t=$('#toast');t.innerHTML=I('check',16,'stroke-width:2.2')+esc(m);t.classList.add('sh');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('sh'),2000)}
+let tt;function toast(m){m=String(m??'').trim();if(!m)return;const t=$('#toast');if(!t)return;t.innerHTML=I('check',16,'stroke-width:2.2')+esc(m);t.classList.add('sh');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('sh'),2000)}
 
 /* ============================ UI (V2) ============================ */
 const UI={f:'tous',view:null,day:sod(new Date()),aq:'',asOpen:false,pushSubscribed:false,pushMsg:''};
@@ -339,8 +339,11 @@ function initScrimTouch(){document.addEventListener('touchmove',e=>{if(e.target.
 const motionOk=()=>!matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMob=()=>innerWidth<767;
 const tabFromHash=h=>h.startsWith('#/appel/')||h==='#/appels'?1:h==='#/agenda'||/^#\/rdv\//.test(h)?2:h==='#/assistant'?3:h==='#/reglages'?4:0;
-function layoutNavPills(tab,instant){const mob=isMob();const inst=instant??(!_pillPrimed||mob);const place=(root,pill,idx,axis)=>{if(!root||!pill)return;const links=[...root.querySelectorAll('a')];if(idx==null||idx<0||idx>=links.length){pill.style.opacity='0';return}pill.style.opacity='1';const link=links[idx];const x=link.offsetLeft,y=link.offsetTop,w=link.offsetWidth,h=link.offsetHeight;if(inst||mob)pill.style.transition='none';pill.style.width=w+'px';pill.style.height=h+'px';pill.style.transform=axis==='x'?`translate3d(${x}px,0,0)`:`translate3d(0,${y}px,0)`;if(inst||mob){pill.offsetHeight;requestAnimationFrame(()=>{pill.style.transition=mob?'transform .28s cubic-bezier(.32,.72,0,1)':''})}};
- place($('.snav'),$('.snav-pill'),tab<4?tab:null,'y',inst);place($('.nav'),$('.nav-pill-m'),tab,'x',inst);if(inst)_pillPrimed=true}
+function layoutNavPills(tab,instant){const mob=isMob();const inst=instant??(!_pillPrimed||mob);const place=(root,pill,idx,axis)=>{if(!root||!pill)return;const links=[...root.querySelectorAll('a')];if(idx==null||idx<0||idx>=links.length){pill.style.opacity='0';return}pill.style.opacity='1';const link=links[idx];const x=link.offsetLeft,y=link.offsetTop,w=link.offsetWidth,h=link.offsetHeight;if(inst)pill.style.transition='none';pill.style.width=w+'px';pill.style.height=h+'px';pill.style.transform=axis==='x'?`translate3d(${x}px,0,0)`:`translate3d(0,${y}px,0)`;if(inst){pill.offsetHeight;requestAnimationFrame(()=>{pill.style.transition=''})}};
+ place($('.snav'),$('.snav-pill'),tab<4?tab:null,'y');
+ const mpill=$('.nav-pill-m');
+ if(mob&&mpill){if(tab==null||tab<0||tab>4){mpill.style.opacity='0'}else{mpill.style.opacity='1';mpill.style.width='';mpill.style.height='';if(inst)mpill.style.transition='none';mpill.style.transform=`translateX(calc(${tab} * 100%))`;if(inst){mpill.offsetHeight;requestAnimationFrame(()=>{mpill.style.transition='transform .28s cubic-bezier(.32,.72,0,1)'})}}}else place($('.nav'),mpill,tab,'x');
+ if(inst)_pillPrimed=true}
 let _countRaf=0;const _countAnimated=new Map();
 function settleCounts(){document.querySelectorAll('.hero-n,.ak-count-n').forEach(el=>{const t=+(el.dataset.n??el.dataset.countN)||0;el.textContent=String(t)});document.querySelectorAll('.ak-bar-fill').forEach(el=>{el.style.width=(+el.dataset.n||0)+'%'})}
 function dashCountAnim(){if(_countRaf){cancelAnimationFrame(_countRaf);_countRaf=0}const items=[],easeOk=motionOk()&&!document.hidden;
@@ -461,7 +464,8 @@ const PTR_MAX=80,PTR_TRIGGER=64;
 const ptrOk=()=>innerWidth<768&&!document.body.classList.contains('is-login')&&_scrollLockN===0;
 let _ptrY0=0,_ptrPull=0,_ptrOn=false,_ptrLoad=false;
 const ptrEl=()=>$('#ptr');
-function ptrUi(pull,spin){const p=ptrEl(),ios=p?.querySelector('.ptr-ios');if(!p||!ios)return;if(pull<=0&&!spin&&!_ptrLoad){p.classList.remove('vis','spin');ios.style.transform='';p.style.opacity='';return}p.classList.add('vis');p.classList.toggle('spin',!!spin);if(spin){ios.style.transform='';p.style.opacity='1'}else{const deg=Math.min(1,pull/PTR_MAX)*300;ios.style.transform=`rotate(${deg}deg)`;p.style.opacity=String(Math.min(1,pull/36))}}
+function ptrReset(){const p=ptrEl();if(!p)return;p.classList.remove('vis','spin');p.style.removeProperty('--ptr-o');p.style.opacity='';p.style.transform='';const ios=p.querySelector('.ptr-ios');if(ios)ios.style.transform=''}
+function ptrUi(pull,spin){const p=ptrEl(),ios=p?.querySelector('.ptr-ios');if(!p||!ios)return;if(pull<=0&&!spin&&!_ptrLoad){ptrReset();return}p.classList.add('vis');p.classList.toggle('spin',!!spin);p.style.opacity='';p.style.transform='';if(spin){ios.style.transform='';p.style.setProperty('--ptr-o','1')}else{const deg=Math.min(1,pull/PTR_MAX)*300;ios.style.transform=`rotate(${deg}deg)`;p.style.setProperty('--ptr-o',String(Math.min(1,pull/36)))}}
 function initPullRefresh(){document.addEventListener('touchstart',ptrTouch,{passive:true});document.addEventListener('touchmove',ptrTouch,{passive:true});document.addEventListener('touchend',ptrTouch,{passive:true});document.addEventListener('touchcancel',ptrTouch,{passive:true})}
 function ptrTouch(e){if(_ptrLoad||!ptrOk())return;
  if(e.type==='touchstart'){if(window.scrollY!==0){_ptrOn=false;return}_ptrOn=true;_ptrY0=e.touches[0].clientY;_ptrPull=0;return}
@@ -469,9 +473,9 @@ function ptrTouch(e){if(_ptrLoad||!ptrOk())return;
  if(e.type==='touchmove'){if(window.scrollY!==0){_ptrOn=false;_ptrPull=0;ptrUi(0,false);return}const dy=e.touches[0].clientY-_ptrY0;if(dy>10){_ptrPull=Math.min(PTR_MAX,(dy-10)*.5);ptrUi(_ptrPull,false)}else{_ptrPull=0;ptrUi(0,false)}return}
  if(e.type==='touchcancel'){_ptrOn=false;_ptrPull=0;ptrUi(0,false);return}
  _ptrOn=false;
- if(_ptrPull>=PTR_TRIGGER){_ptrLoad=true;ptrUi(_ptrPull,true);refreshCurrentPage().finally(()=>{ptrUi(0,false);_ptrLoad=false;_ptrPull=0})}
- else{ptrUi(0,false);_ptrPull=0}}
-initPullRefresh();
+ if(_ptrPull>=PTR_TRIGGER){_ptrLoad=true;ptrUi(_ptrPull,true);refreshCurrentPage().finally(()=>{ptrReset();_ptrLoad=false;_ptrPull=0})}
+ else{ptrReset();_ptrPull=0}}
+initPullRefresh();ptrReset();
 initScrimTouch();
 
 boot();
