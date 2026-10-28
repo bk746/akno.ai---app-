@@ -3,7 +3,7 @@
  --sb:0px;--side:0px;--navh:64px;color-scheme:dark}
 /* reset */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html,body{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;overscroll-behavior:none;background-color:#060a16}
+html,body{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;overscroll-behavior-y:none;overscroll-behavior-x:none;-webkit-overflow-scrolling:touch;background-color:#060a16}
 html{min-height:100%}
 body{font-family:'General Sans',system-ui,-apple-system,sans-serif;color:#fff;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;font-kerning:normal;min-height:100vh;background:transparent}
 .akno-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-color:var(--bg);
@@ -90,7 +90,7 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;strok
 /* ================= layout ================= */
 #app{position:relative;z-index:1;display:flex;min-height:100vh}
 .side{display:none;view-transition-name:none}
-#page{flex:1;min-width:0;padding:calc(env(safe-area-inset-top) + 12px) 20px calc(var(--navh) + 56px + env(safe-area-inset-bottom));view-transition-name:page}
+#page{flex:1;min-width:0;padding:calc(env(safe-area-inset-top) + 12px) 20px calc(var(--navh) + 56px + env(safe-area-inset-bottom));view-transition-name:page;-webkit-overflow-scrolling:touch}
 #page.noanim .ak-stagger{animation:none!important;opacity:1!important;transform:none!important}
 .wrap{max-width:1680px;width:100%;margin:0 auto;padding:clamp(24px,2.5vw,48px);box-sizing:border-box}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;margin-bottom:16px}
@@ -231,6 +231,19 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;strok
 .cal-mo-lst{padding-top:4px;padding-bottom:4px}
 .cal-mo-cell.sel{background:rgba(255,255,255,.06)}
 @media (max-width:767px){
+ #app{display:block}
+ #page{padding:calc(env(safe-area-inset-top) + 16px) 16px calc(var(--navh) + 24px + env(safe-area-inset-bottom));view-transition-name:none}
+ #page:has(.as-page){padding-bottom:calc(var(--navh) + 56px + 72px + env(safe-area-inset-bottom))}
+ .wrap{padding:0;max-width:none}
+ .card{padding:18px;width:100%;box-sizing:border-box}
+ .set-card.card{padding:18px}
+ .nav{padding:4px 6px;align-items:stretch;backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%)}
+ .nav a{justify-self:stretch;max-width:none;min-height:56px;height:auto;padding:8px 4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+ .nav-pill-m{transition:transform .28s cubic-bezier(.32,.72,0,1)!important}
+ .toast{top:auto;bottom:calc(16px + var(--navh) + 12px + env(safe-area-inset-bottom));transform:translate(-50%,calc(100% + 24px));transition:transform .25s cubic-bezier(.2,.8,.2,1),opacity .25s ease}
+ .toast.sh{transform:translate(-50%,0)}
+ #page.ak-page-in{animation:akPageIn .15s ease-out both}
+ .ak-stagger{animation:none!important;opacity:1!important;transform:none!important}
  .cal-mo-wds{padding:0 8px}
  .cal-mo-cell{align-items:center;text-align:center;padding:8px 4px}
  .cal-mo-num{align-self:center}
@@ -504,6 +517,7 @@ button.kv{color:#fff}
  .chart{min-height:clamp(360px,36vh,560px)}
 }
 /* ================= Motion (Revolut-style) ================= */
+@keyframes akPageIn{from{opacity:0}to{opacity:1}}
 @keyframes akFade{from{opacity:0}}
 @keyframes akRise{from{opacity:0;transform:translateY(6px)}}
 @keyframes akSheetIn{from{opacity:0;transform:translateY(100%)}}
@@ -515,8 +529,9 @@ button.kv{color:#fff}
 ::view-transition-new(page){animation:akFade .2s ease-out both}
 ::view-transition-old(root),::view-transition-new(root){animation:none}
 @media (prefers-reduced-motion:reduce){
- .ak-stagger,.nav-pill,.snav-pill,.nav-pill-m{animation:none!important}
+ .ak-stagger,.nav-pill,.snav-pill,.nav-pill-m,#page.ak-page-in{animation:none!important}
  .nav-pill,.snav-pill,.nav-pill-m{transition:none!important}
  .ov,.dsheet,.as-sheet,.sheet{animation:none!important}
  ::view-transition-old(page),::view-transition-new(page){animation:none!important}
+ .toast{transition:none!important}
 }
