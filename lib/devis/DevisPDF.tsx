@@ -11,221 +11,286 @@ import { devisPdfTotals, fmtPdfDate, fmtPdfEur } from "./devisPdfTypes";
 
 const s = StyleSheet.create({
   page: {
-    padding: 40,
+    padding: 48,
     fontSize: 10,
     fontFamily: "Helvetica",
-    color: "#111827",
-    lineHeight: 1.45,
+    color: "#1f2937",
+    lineHeight: 1.5,
+    backgroundColor: "#ffffff",
   },
-  header: {
+  topRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 32,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  docTitle: { fontSize: 22, fontWeight: 700, letterSpacing: 0.4, color: "#111827" },
+  docNum: { fontSize: 11, color: "#6b7280", marginTop: 4 },
+  datesCol: { textAlign: "right", minWidth: 180 },
+  dateLbl: { fontSize: 8, color: "#9ca3af", textTransform: "uppercase", letterSpacing: 0.5 },
+  dateVal: { fontSize: 10, color: "#374151", marginTop: 2, marginBottom: 8 },
+  parties: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 24,
     marginBottom: 28,
   },
-  headerLeft: { flex: 1, paddingRight: 16 },
-  headerRight: { width: 200, textAlign: "right" },
-  logo: { width: 72, height: 48, objectFit: "contain", marginBottom: 8 },
-  coName: { fontSize: 13, fontWeight: 700, marginBottom: 4 },
-  mut: { color: "#4b5563", fontSize: 9 },
-  title: { fontSize: 16, fontWeight: 700, letterSpacing: 0.5 },
-  block: { marginBottom: 18 },
-  blockTitle: {
+  partyCol: { flex: 1 },
+  partyLbl: {
+    fontSize: 8,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    color: "#9ca3af",
+    letterSpacing: 0.6,
+    marginBottom: 8,
+  },
+  partyName: { fontSize: 12, fontWeight: 700, color: "#111827", marginBottom: 4 },
+  partyLine: { fontSize: 9.5, color: "#4b5563", marginBottom: 2 },
+  logo: { width: 64, height: 40, objectFit: "contain", marginBottom: 8 },
+  descTitle: {
     fontSize: 9,
     fontWeight: 700,
     textTransform: "uppercase",
     color: "#6b7280",
-    marginBottom: 6,
-    letterSpacing: 0.6,
+    letterSpacing: 0.5,
+    marginBottom: 8,
   },
-  table: { marginTop: 4 },
-  row: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-    paddingVertical: 6,
+  objet: { fontSize: 10, color: "#374151", marginBottom: 12 },
+  table: {
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 4,
+    overflow: "hidden",
   },
   rowHead: {
     flexDirection: "row",
+    backgroundColor: "#f3f4f6",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#111827",
-    paddingBottom: 6,
-    marginBottom: 2,
-    fontWeight: 700,
-    fontSize: 9,
+    borderBottomColor: "#e5e7eb",
   },
-  colDes: { flex: 1, paddingRight: 8 },
-  colQ: { width: 36, textAlign: "right" },
-  colPu: { width: 72, textAlign: "right" },
-  colTot: { width: 72, textAlign: "right" },
-  totals: { marginTop: 12, marginLeft: "auto", width: 220 },
+  rowHeadTxt: { fontSize: 9, fontWeight: 700, color: "#374151" },
+  row: {
+    flexDirection: "row",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f3f4f6",
+  },
+  colDes: { flex: 1, paddingRight: 12, fontSize: 10 },
+  colAmt: { width: 88, textAlign: "right", fontSize: 10, fontWeight: 500 },
+  totalsWrap: { marginTop: 16, flexDirection: "row", justifyContent: "flex-end" },
+  totals: { width: 240 },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 3,
+    paddingVertical: 4,
+    fontSize: 10,
+    color: "#4b5563",
   },
-  ttc: {
+  totalLbl: { color: "#6b7280" },
+  ttcRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 8,
-    marginTop: 6,
+    marginTop: 8,
+    paddingTop: 10,
     borderTopWidth: 2,
     borderTopColor: "#111827",
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 700,
+    color: "#111827",
   },
-  conditions: { marginTop: 16, fontSize: 9, color: "#374151" },
-  accord: {
-    marginTop: 24,
-    padding: 14,
+  footRow: {
+    marginTop: 36,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 32,
+  },
+  termsCol: { flex: 1, paddingRight: 16 },
+  termsTitle: { fontSize: 9, fontWeight: 700, marginBottom: 6, color: "#374151" },
+  termsTxt: { fontSize: 8.5, color: "#6b7280", lineHeight: 1.45 },
+  sigCol: { width: 220 },
+  sigBox: {
     borderWidth: 1,
     borderColor: "#d1d5db",
     borderRadius: 4,
+    padding: 14,
+    minHeight: 120,
   },
-  accordTitle: { fontWeight: 700, marginBottom: 10 },
+  sigTitle: { fontSize: 10, fontWeight: 700, marginBottom: 12, color: "#111827" },
   sigLine: {
-    marginTop: 28,
+    marginTop: 48,
     borderBottomWidth: 1,
     borderBottomColor: "#9ca3af",
-    width: 220,
+    width: "100%",
   },
-  footer: {
+  sigHint: { fontSize: 8, color: "#9ca3af", marginTop: 6 },
+  legalFoot: {
     position: "absolute",
-    bottom: 32,
-    left: 40,
-    right: 40,
-    fontSize: 8,
-    color: "#6b7280",
+    bottom: 36,
+    left: 48,
+    right: 48,
+    fontSize: 7.5,
+    color: "#9ca3af",
     borderTopWidth: 1,
     borderTopColor: "#e5e7eb",
     paddingTop: 8,
+    textAlign: "center",
   },
 });
 
+function issuerLines(e: DevisPdfPayload["ent"]) {
+  const name = [e.entreprise_nom, e.entreprise_forme].filter(Boolean).join(" ");
+  const addr = [e.entreprise_adresse, e.entreprise_cp_ville].filter(Boolean);
+  const contact = [e.entreprise_telephone, e.entreprise_email].filter(Boolean);
+  return { name, addr, contact };
+}
+
 export function DevisPDF({ data }: { data: DevisPdfPayload }) {
-  const { ht, tva, ttc } = devisPdfTotals(data.lignes, data.tva_taux);
+  const lignes = (data.lignes || []).filter((l) =>
+    String(l.designation || "").trim(),
+  );
+  const { ht, tva, ttc } = devisPdfTotals(lignes, data.tva_taux);
   const e = data.ent;
-  const coLine = [e.entreprise_nom, e.entreprise_forme]
-    .filter(Boolean)
-    .join(" ");
+  const issuer = issuerLines(e);
   const footerParts = [
     e.entreprise_siret ? `SIRET ${e.entreprise_siret}` : "",
     e.entreprise_tva ? `TVA ${e.entreprise_tva}` : "",
-    e.entreprise_rcs_rm ? e.entreprise_rcs_rm : "",
+    e.entreprise_rcs_rm || "",
   ].filter(Boolean);
   const assParts = [
     e.assurance_nom ? `Assurance décennale : ${e.assurance_nom}` : "",
     e.assurance_numero ? `n° ${e.assurance_numero}` : "",
-    e.assurance_zone ? `zone ${e.assurance_zone}` : "",
+    e.assurance_zone ? e.assurance_zone : "",
   ].filter(Boolean);
+  const terms = [
+    e.devis_conditions ? e.devis_conditions : "",
+    e.devis_mentions || "",
+    "Devis gratuit.",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return (
     <Document title={`Devis ${data.numero}`}>
       <Page size="A4" style={s.page}>
-        <View style={s.header}>
-          <View style={s.headerLeft}>
+        <View style={s.topRow}>
+          <View>
+            <Text style={s.docTitle}>DEVIS</Text>
+            <Text style={s.docNum}>#{data.numero}</Text>
+          </View>
+          <View style={s.datesCol}>
+            <Text style={s.dateLbl}>Date du devis</Text>
+            <Text style={s.dateVal}>{fmtPdfDate(data.date_emission)}</Text>
+            <Text style={s.dateLbl}>Validité du devis</Text>
+            <Text style={s.dateVal}>{fmtPdfDate(data.date_validite)}</Text>
+          </View>
+        </View>
+
+        <View style={s.parties}>
+          <View style={s.partyCol}>
+            <Text style={s.partyLbl}>Entreprise émettrice</Text>
             {e.logo_url ? (
               // eslint-disable-next-line jsx-a11y/alt-text -- PDF Image
               <Image src={e.logo_url} style={s.logo} />
             ) : null}
-            {coLine ? <Text style={s.coName}>{coLine}</Text> : null}
-            {e.entreprise_adresse ? (
-              <Text style={s.mut}>{e.entreprise_adresse}</Text>
+            {issuer.name ? (
+              <Text style={s.partyName}>{issuer.name}</Text>
             ) : null}
-            {e.entreprise_cp_ville ? (
-              <Text style={s.mut}>{e.entreprise_cp_ville}</Text>
-            ) : null}
-            {e.entreprise_telephone ? (
-              <Text style={s.mut}>{e.entreprise_telephone}</Text>
-            ) : null}
-            {e.entreprise_email ? (
-              <Text style={s.mut}>{e.entreprise_email}</Text>
-            ) : null}
+            {issuer.contact.map((line, i) => (
+              <Text key={`c-${i}`} style={s.partyLine}>
+                {line}
+              </Text>
+            ))}
+            {issuer.addr.map((line, i) => (
+              <Text key={`a-${i}`} style={s.partyLine}>
+                {line}
+              </Text>
+            ))}
           </View>
-          <View style={s.headerRight}>
-            <Text style={s.title}>DEVIS n° {data.numero}</Text>
-            <Text style={s.mut}>Date : {fmtPdfDate(data.date_emission)}</Text>
-            <Text style={s.mut}>
-              Valable jusqu&apos;au {fmtPdfDate(data.date_validite)}
-            </Text>
+          <View style={s.partyCol}>
+            <Text style={s.partyLbl}>À l&apos;attention de</Text>
+            <Text style={s.partyName}>{data.client_nom}</Text>
+            {data.client_adresse ? (
+              <Text style={s.partyLine}>{data.client_adresse}</Text>
+            ) : null}
+            {data.client_email ? (
+              <Text style={s.partyLine}>{data.client_email}</Text>
+            ) : null}
+            {data.client_telephone ? (
+              <Text style={s.partyLine}>{data.client_telephone}</Text>
+            ) : null}
           </View>
         </View>
 
-        <View style={s.block}>
-          <Text style={s.blockTitle}>Client</Text>
-          <Text>{data.client_nom}</Text>
-          {data.client_adresse ? (
-            <Text style={s.mut}>{data.client_adresse}</Text>
-          ) : null}
-          {data.client_email ? (
-            <Text style={s.mut}>{data.client_email}</Text>
-          ) : null}
-          {data.client_telephone ? (
-            <Text style={s.mut}>{data.client_telephone}</Text>
-          ) : null}
-        </View>
-
-        <View style={s.block}>
-          <Text style={s.blockTitle}>Objet</Text>
-          <Text>{data.objet}</Text>
-        </View>
+        <Text style={s.descTitle}>Description</Text>
+        {data.objet ? <Text style={s.objet}>{data.objet}</Text> : null}
 
         <View style={s.table}>
           <View style={s.rowHead}>
-            <Text style={s.colDes}>Désignation</Text>
-            <Text style={s.colQ}>Qté</Text>
-            <Text style={s.colPu}>P.U. HT</Text>
-            <Text style={s.colTot}>Total HT</Text>
+            <Text style={[s.colDes, s.rowHeadTxt]}>Désignation</Text>
+            <Text style={[s.colAmt, s.rowHeadTxt]}>Montant</Text>
           </View>
-          {data.lignes.map((l, i) => {
+          {lignes.map((l, i) => {
             const q = Number(l.quantite) || 0;
             const pu = Number(l.prix_unitaire_ht) || 0;
+            const line = q * pu;
+            const label =
+              q > 1
+                ? `${l.designation} (${q} × ${fmtPdfEur(pu)})`
+                : String(l.designation);
             return (
               <View key={i} style={s.row}>
-                <Text style={s.colDes}>{l.designation || "—"}</Text>
-                <Text style={s.colQ}>{q}</Text>
-                <Text style={s.colPu}>{fmtPdfEur(pu)}</Text>
-                <Text style={s.colTot}>{fmtPdfEur(q * pu)}</Text>
+                <Text style={s.colDes}>{label}</Text>
+                <Text style={s.colAmt}>{fmtPdfEur(line)}</Text>
               </View>
             );
           })}
         </View>
 
-        <View style={s.totals}>
-          <View style={s.totalRow}>
-            <Text>Total HT</Text>
-            <Text>{fmtPdfEur(ht)}</Text>
-          </View>
-          <View style={s.totalRow}>
-            <Text>TVA ({String(data.tva_taux).replace(".", ",")} %)</Text>
-            <Text>{fmtPdfEur(tva)}</Text>
-          </View>
-          <View style={s.ttc}>
-            <Text>Total TTC</Text>
-            <Text>{fmtPdfEur(ttc)}</Text>
+        <View style={s.totalsWrap}>
+          <View style={s.totals}>
+            <View style={s.totalRow}>
+              <Text style={s.totalLbl}>Sous-total HT</Text>
+              <Text>{fmtPdfEur(ht)}</Text>
+            </View>
+            <View style={s.totalRow}>
+              <Text style={s.totalLbl}>
+                TVA ({String(data.tva_taux).replace(".", ",")} %)
+              </Text>
+              <Text>{fmtPdfEur(tva)}</Text>
+            </View>
+            <View style={s.ttcRow}>
+              <Text>TOTAL TTC</Text>
+              <Text>{fmtPdfEur(ttc)}</Text>
+            </View>
           </View>
         </View>
 
-        <View style={s.conditions}>
-          {e.devis_conditions ? (
-            <Text>Conditions de paiement : {e.devis_conditions}</Text>
-          ) : null}
-          <Text style={{ marginTop: 6 }}>Devis gratuit</Text>
-          {e.devis_mentions ? (
-            <Text style={{ marginTop: 6 }}>{e.devis_mentions}</Text>
-          ) : null}
+        <View style={s.footRow}>
+          <View style={s.termsCol}>
+            <Text style={s.termsTitle}>Termes et conditions</Text>
+            <Text style={s.termsTxt}>{terms}</Text>
+          </View>
+          <View style={s.sigCol}>
+            <View style={s.sigBox}>
+              <Text style={s.sigTitle}>Bon pour accord</Text>
+              <Text style={s.sigHint}>Date et signature du client</Text>
+              <View style={s.sigLine} />
+            </View>
+          </View>
         </View>
 
-        <View style={s.accord}>
-          <Text style={s.accordTitle}>Bon pour accord</Text>
-          <Text style={s.mut}>Date : _______________________</Text>
-          <Text style={s.mut}>Signature :</Text>
-          <View style={s.sigLine} />
-        </View>
-
-        <View style={s.footer} fixed>
-          <Text>{footerParts.join(" · ")}</Text>
-          {assParts.length ? <Text>{assParts.join(" · ")}</Text> : null}
-        </View>
+        {(footerParts.length > 0 || assParts.length > 0) && (
+          <View style={s.legalFoot} fixed>
+            <Text>{[...footerParts, ...assParts].join(" · ")}</Text>
+          </View>
+        )}
       </Page>
     </Document>
   );

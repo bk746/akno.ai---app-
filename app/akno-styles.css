@@ -417,6 +417,9 @@ button.kv{color:#fff}
 .set-help-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:0 4px;font-size:15px;font-weight:500;color:#fff}
 .set-help-row+.set-help-row{box-shadow:inset 0 1px 0 var(--line)}
 .set-help-row svg{color:var(--mut);flex:none}
+@media (max-width:767px){
+ .set-col>.set-card.set-card+.set-ent-acc{margin-top:16px}
+}
 @media (min-width:1024px){
  .set-page{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 }
